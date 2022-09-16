@@ -1,0 +1,9 @@
+{
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		"ms-vscode.azurecli",
+		"ms-azuretools.vscode-bicep",
+		"msazurermtools.azurerm-vscode-tools",
+		"ms-vscode.powershell"
+	]
+}

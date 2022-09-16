@@ -1,0 +1,50 @@
+{
+  "variable": {
+    "image": {
+      "type": "map(string)",
+      "default": {
+        "type": "Windows",
+        "offer" : "WindowsServer",
+        "publisher" : "MicrosoftWindowsServer",
+        "sku" : "2019-Datacenter",
+        "version" : "latest"
+      }
+    },
+    "artifact_storage_account": {
+      "type": "string",
+      "default": "mystorageacct"
+    },
+    "artifact_storage_account_container": {
+      "type": "string",
+      "default": "vhds"
+    },
+    "image_vhd_name": {
+      "type": "string",
+      "default": "MyImage"
+    },
+    "region": {
+      "type": "string",
+      "default": "West US"
+    },
+    "resource_group_name" : {
+      "type": "string",
+      "default": "MyResourceGroup"
+    },
+    "temp_resource_group_name": {
+      "type": "string",
+      "default": "basic-winpkr-rg"
+    },
+    "temp_compute_name": {
+      "type": "string",
+      "default": "basicwinpkr"
+    },
+    "vm_size": {
+      "type": "string",
+      "default": "Standard_D2s_v3"
+    },
+    "dlink_lgpo_tool": {
+      "type": "string",
+      "default": "https://download.microsoft.com/download/8/5/C/85C25433-A1B0-4FFA-9429-7E023E7DA8D8/LGPO.zip"
+    }
+  }
+}

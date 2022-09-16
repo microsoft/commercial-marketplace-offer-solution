@@ -1,0 +1,9 @@
+config.json
+partnerCenterConfig.yml
+config.yml
+
+scripts/release_*
+arm-template-toolkit
+scripts/temp_*
+
+**.zip
