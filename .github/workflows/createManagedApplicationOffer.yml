@@ -12,10 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Azure Login
+        uses: Azure/login@v1.4.6
+        with:
+          client-id: ${{ secrets.AAD_CLIENTID}}
+          tenant-id: ${{ secrets.AAD_TENANTID}}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTIONID}}
 
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Azure CLI Action
+        uses: Azure/cli@v1
+        with:
+          inlineScript: |
+            az account show
