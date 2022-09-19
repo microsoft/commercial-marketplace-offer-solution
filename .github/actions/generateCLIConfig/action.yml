@@ -1,0 +1,68 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Generate config files
+description: Generate the config.json and config.yml for the Partner Center CLI
+inputs:
+  configYamlPath:
+    description: Config YAML path
+    required: false
+    default: ./scripts/config.yml
+  AAD_TENANTID:
+    description: AAD tenant ID
+    required: true
+  AAD_CLIENTID:
+    description: AAD client ID
+    required: true
+  AAD_CLIENTSECRET:
+    description: AAD client secret
+    required: true
+  PARNERCENTER_MANAGEDAPPPRINCIPALID:
+    description: Partner Center Managed App Principal ID
+    required: true
+  PARNERCENTER_PUBLISHERID:
+    description: Partner Center Publisher ID
+    required: true
+  AZURE_SUBSCRIPTIONID:
+    description: Azure subscription ID
+    required: true
+  AZURE_LOCATION:
+    description: Azure location
+    required: true
+  AZURE_ADMINPASSWORD:
+    description: Azure admin password
+    required: true
+  AZURE_STORAGEACCOUNTRESOURCEGROUP:
+    description: Azure storage account resource group
+    required: true
+  AZURE_STORAGEACCOUNTNAME:
+    description: Azure storage account name
+    required: true
+  AZURE_STORAGEACCOUNTKEY:
+    description: Azure storage account key
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Generate config.json.tmpl
+      uses: cschleiden/replace-tokens@v1.1
+      with:
+        files: '["scripts/config.json.tmpl"]'
+      env:
+        AAD_TENANTID: ${{ inputs.AAD_TENANTID }}
+        AAD_CLIENTID: ${{ inputs.AAD_CLIENTID }}
+        AAD_CLIENTSECRET: ${{ inputs.AAD_CLIENTSECRET }}
+        PARNERCENTER_MANAGEDAPPPRINCIPALID: ${{ inputs.PARNERCENTER_MANAGEDAPPPRINCIPALID }}
+        PARNERCENTER_PUBLISHERID: ${{ inputs.PARNERCENTER_PUBLISHERID }}
+        AZURE_SUBSCRIPTIONID: ${{ inputs.AZURE_SUBSCRIPTIONID }}'
+        AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+        AZURE_ADMINPASSWORD: ${{ inputs.AZURE_ADMINPASSWORD }}
+        AZURE_STORAGEACCOUNTRESOURCEGROUP: ${{ inputs.AZURE_STORAGEACCOUNTRESOURCEGROUP }}
+        AZURE_STORAGEACCOUNTNAME: ${{ inputs.AZURE_STORAGEACCOUNTNAME }}
+        AZURE_STORAGEACCOUNTKEY: ${{ inputs.AZURE_STORAGEACCOUNTKEY }}
+    - name:  Generate Partner Center CLI configuration file
+      shell: bash
+      run: |
+        config_yaml_path="${{ inputs.configYamlPath }}"
+        echo "Generating Partner Center CLI config file at $config_yaml_path"
+        cd scripts
+        python helpers/generatePCYaml.py config.json.tmpl $config_yaml_path
