@@ -22,7 +22,7 @@ jobs:
           Install-Module -Name Pester -RequiredVersion 4.10.1 -Force
           Import-Module -Name Pester -RequiredVersion 4.10.1 -Force
 
-          Invoke-WebRequest -Uri aka.ms/arm-ttk-marketplace -OutFile arm-template-toolkit.zip
+          Invoke-WebRequest -Uri aka.ms/arm-ttk-latest -OutFile arm-template-toolkit.zip
           Expand-Archive -LiteralPath arm-template-toolkit.zip -DestinationPath arm-ttk
 
           Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
