@@ -1,0 +1,37 @@
+name: RunARMTTK
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  ValidateARMTemplates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Generate ARM template from Bicep templates
+        uses: Azure/bicep-build-action@v1.0.1
+        with:
+          bicepFilePath: ./samples/solution-template/base-image-vm/app-contents/mainTemplate.bicep
+          outputFilePath: ./samples/solution-template/base-image-vm/app-contents/mainTemplate.json
+      - name: Run ARM-TTK
+        shell: pwsh
+        run: |
+          Install-Module -Name Pester -RequiredVersion 4.10.1 -Force
+          Import-Module -Name Pester -RequiredVersion 4.10.1 -Force
+
+          Invoke-WebRequest -Uri aka.ms/arm-ttk-marketplace -OutFile arm-template-toolkit.zip
+          Expand-Archive -LiteralPath arm-template-toolkit.zip -DestinationPath arm-ttk
+
+          Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
+
+          echo "Test-AzTemplate -TemplatePath ./samples/solution-template/base-image-vm/app-contents -Pester -Skip Secure-Params-In-Nested-Deployments" | Out-File -FilePath ./armttk.ps1
+          Invoke-Pester -Script ./armttk.ps1 -EnableExit -OutputFormat NUnitXml -OutputFile ./armttk.xml
+      - name: PublishTestResults
+        uses: actions/upload-artifact@v3
+        with:
+          name: ARMTTKResults
+          path: ./armttk.xml
+        if: ${{ always() }}

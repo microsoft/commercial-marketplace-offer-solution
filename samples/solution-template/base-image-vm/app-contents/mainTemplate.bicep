@@ -93,12 +93,6 @@ var tags_var = {
   offer: 'Sample Basic Windows 2019 VM'
 }
 
-var vnetId = {
-  new     : resourceId('Microsoft.Network/virtualNetworks', vnetName)
-  existing: resourceId(vnetRGName, 'Microsoft.Network/virtualNetworks', vnetName)
-}
-var subnetId = '${vnetId[vnetNewOrExisting]}/subnets/${subNetName}'
-
 var publicIpId = {
   new: resourceId('Microsoft.Network/publicIPAddresses', publicIpName)
   existing: resourceId(publicIpRGName, 'Microsoft.Network/publicIPAddresses', publicIpName)
@@ -175,6 +169,11 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-03-01' = if (vnetNewOrExis
   tags: (contains(outTagsByResource, 'Microsoft.Network/virtualNetworks') ? union(tags_var, outTagsByResource['Microsoft.Network/virtualNetworks']) : tags_var)
 }
 
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' existing = {
+  name: subNetName
+  scope: resourceGroup(vnetRGName)
+}
+
 resource nic 'Microsoft.Network/networkInterfaces@2021-03-01' = {
   name: nicName_var
   location: location
@@ -186,17 +185,17 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-03-01' = {
     ipConfigurations: [
       {
         name: ipconfName
-        properties: union( {
-              subnet: {
-                id: subnetId
-              }
-            }, {
-              privateIPAllocationMethod: 'Dynamic'
-            }, (!empty(publicIpId)) ? {
-              publicIPAddress: {
-                id: publicIpId
-              }
-            } : {} )
+        properties: union({
+            subnet: {
+              id: subnet.id
+            }
+          }, {
+            privateIPAllocationMethod: 'Dynamic'
+          }, (!empty(publicIpId)) ? {
+            publicIPAddress: {
+              id: publicIpId
+            }
+          } : {})
       }
     ]
     networkSecurityGroup: {
