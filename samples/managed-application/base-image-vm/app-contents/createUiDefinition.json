@@ -1,0 +1,252 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Azure.CreateUIDef",
+  "version": "0.1.2-preview",
+  "parameters": {
+    "resourceTypes": [
+      "Microsoft.Compute/virtualMachines",
+      "Microsoft.Network/publicIPAddresses",
+      "Microsoft.Network/virtualNetworks",
+      "Microsoft.Network/networkInterfaces"
+    ],
+    "basics": [
+      {
+        "name": "vmName",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Virtual machine name",
+        "toolTip": "Virtual machines in Azure have two distinct names: virtual machine name used as the Azure resource identifier, and in guest host name. When you create a VM in the portal, the same name is used for both the virtual machine name and the host name. The virtual machine name cannot be changed after the VM is created. You can change the host name when you log into the virtual machine.",
+        "defaultValue": "[concat('basicwinvm', take(replace(guid(), '-', ''), 5))]",
+        "constraints": {
+          "required": true,
+          "validations": [
+            {
+              "regex": "^([a-zA-Z0-9-]{0,14}[a-zA-Z0-9]){1}$",
+              "message": "The virtual machine name can only contain alphanumeric values and hyphens, but may not end with a hyphen. The name must be between 1-15 characters."
+            }
+          ]
+        },
+        "visible": true
+      },
+      {
+        "name": "vmSize",
+        "type": "Microsoft.Compute.SizeSelector",
+        "label": "Virtual machine size",
+        "toolTip": "Select a VM size to support the workload that you want to run. The size that you choose then determines factors such as processing power, memory, and storage capacity. Azure offers a wide variety of sizes to support many types of uses. Azure charges an hourly price based on the VM's size and operating system.<br>[Learn more about Virtual Machine sizes](http://go.microsoft.com/fwlink/?LinkId=2079859)",
+        "recommendedSizes": [
+          "Standard_D2s_v3",
+          "Standard_D4s_v3"
+        ],
+        "constraints": {
+          "allowedSizes": [
+            "Standard_DS2_v2",
+            "Standard_DS3_v2",
+            "Standard_DS4_v2",
+            "Standard_DS5_v2",
+            "Standard_D2s_v3",
+            "Standard_D4s_v3",
+            "Standard_D8s_v3",
+            "Standard_D16s_v3"
+          ]
+        },
+        "osPlatform": "Windows",
+        "imageReference": {
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2019-Datacenter"
+        }
+      },
+      {
+        "name": "adminUsername",
+        "type": "Microsoft.Compute.UserNameTextBox",
+        "label": "Admin username",
+        "toolTip": "The administrator username for the VM",
+        "osPlatform": "Windows"
+      },
+      {
+        "name": "adminPassword",
+        "type": "Microsoft.Compute.CredentialsCombo",
+        "label": {
+          "password": "Password",
+          "confirmPassword": "Confirm password"
+        },
+        "toolTip": {
+          "password": "The administrator password for the VM"
+        },
+        "constraints": {
+          "required": true
+        },
+        "options": {
+          "hideConfirmation": false
+        },
+        "osPlatform": "Windows",
+        "visible": true
+      }
+    ],
+    "steps": [
+      {
+        "name": "networkConfig",
+        "label": "Networking",
+        "subLabel": {
+          "preValidation": "Configure networking",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Networking",
+        "elements": [
+          {
+            "name": "networkingInfo",
+            "type": "Microsoft.Common.TextBlock",
+            "visible": true,
+            "options": {
+              "text": "Define network connectivity for your virtual machine by configuring network interface card (NIC) settings.",
+              "link": {
+                "label": "Learn more",
+                "uri": "https://docs.microsoft.com/en-us/azure/virtual-network/network-overview"
+              }
+            }
+          },
+          {
+            "name": "virtualNetwork",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "Virtual network",
+              "subnets": "Subnets"
+            },
+            "toolTip": {
+              "virtualNetwork": "Virtual networks are logically isolated from each other in Azure. You can configure their IP address ranges, subnets, route tables, gateways, and security settings, much like a traditional network in your data center. Virtual machines in the same virtual network can access each other by default.",
+              "subnets": "A subnet is a range of IP addresses in your virtual network, which can be used to isolate virtual machines from each other or from the Internet."
+            },
+            "defaultValue": {
+              "name": "[concat(basics('vmName'), '-vnet')]",
+              "addressPrefixSize": "/24"
+            },
+            "options": {
+              "hideExisting": false
+            },
+            "constraints": {
+              "minAddressPrefixSize": "/24"
+            },
+            "subnets": {
+              "subnet1": {
+                "label": "Subnet",
+                "defaultValue": {
+                  "name": "basic-win-subnet",
+                  "addressPrefixSize": "/26"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/26",
+                  "minAddressCount": 12,
+                  "requireContiguousAddresses": false
+                }
+              }
+            }
+          },
+          {
+            "name": "publicIp",
+            "type": "Microsoft.Common.Section",
+            "label": "Configure public IP and DNS",
+            "elements": [
+              {
+                "name": "dnsAndPublicIP",
+                "type": "Microsoft.Network.PublicIpAddressCombo",
+                "label": {
+                  "publicIpAddress": "Public IP",
+                  "domainNameLabel": "DNS prefix"
+                },
+                "toolTip": {
+                  "domainNameLabel": "Unique DNS Prefix for the public IP address"
+                },
+                "defaultValue": {
+                  "publicIpAddressName": "[concat(basics('vmName'), '-ip')]",
+                  "domainNameLabel": "[concat(basics('vmName'), '-', take(replace(guid(), '-', ''), 6))]"
+                },
+                "options": {
+                  "hideNone": false,
+                  "hideExisting": false,
+                  "hideDomainNameLabel": false
+                }
+              }
+            ],
+            "visible": true
+          }
+        ]
+      },
+      {
+        "name": "fileConfig",
+        "label": "File Configuration",
+        "subLabel": {
+          "preValidation": "Configure file name and file content",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "File Configuration",
+        "elements": [
+          {
+            "name": "fileName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "File name",
+            "toolTip": "Enter a name (without the extension) for the file to be created.",
+            "defaultValue": "MyFile",
+            "visible": true,
+            "constraints": {
+              "required": true,
+              "regex": "^[a-zA-Z0-9-_]{0,14}[a-zA-Z0-9]$",
+              "validationMessage": "The file name can only contain alphanumeric values, hyphens, and underscores. It must not end with a hyphen or underscore. The name must be between 1-15 characters."
+            }
+          },
+          {
+            "name": "fileContent",
+            "type": "Microsoft.Common.TextBox",
+            "label": "File content",
+            "toolTip": "Enter the content that will be written to the file.",
+            "defaultValue": "MyContent",
+            "multiLine": true,
+            "visible": true,
+            "constraints": {
+              "required": true,
+              "regex": "^.{1,}$",
+              "validationMessage": "At least 1 character is required."
+            }
+          }
+        ]
+      },
+      {
+        "name": "tags",
+        "label": "Tags",
+        "elements": [
+          {
+            "name": "tagsByResource",
+            "type": "Microsoft.Common.TagsByResource",
+            "resources": [
+              "Microsoft.Compute/virtualMachines",
+              "Microsoft.Network/publicIPAddresses",
+              "Microsoft.Network/virtualNetworks",
+              "Microsoft.Network/networkInterfaces"
+            ],
+            "toolTip": "Tags are name/value pairs that enable you to categorize resources and view consolidated billing by applying the same tag to multiple resources and resource groups."
+          }
+        ]
+      }
+    ],
+    "outputs": {
+      "location": "[location()]",
+      "vmName": "[basics('vmName')]",
+      "vmSize": "[basics('vmSize')]",
+      "adminUsername": "[basics('adminUsername')]",
+      "adminPassword": "[basics('adminPassword').password]",
+      "vnetName": "[steps('networkConfig').virtualNetwork.name]",
+      "vnetARPrefixes": "[steps('networkConfig').virtualNetwork.addressPrefixes]",
+      "vnetNewOrExisting": "[steps('networkConfig').virtualNetwork.newOrExisting]",
+      "vnetRGName": "[steps('networkConfig').virtualNetwork.resourceGroup]",
+      "subNetName": "[steps('networkConfig').virtualNetwork.subnets.subnet1.name]",
+      "subNetARPrefix": "[steps('networkConfig').virtualNetwork.subnets.subnet1.addressPrefix]",
+      "publicIpName": "[steps('networkConfig').publicIp.dnsAndPublicIP.name]",
+      "publicIpDns": "[steps('networkConfig').publicIp.dnsAndPublicIP.domainNameLabel]",
+      "publicIpAllocationMethod": "[steps('networkConfig').publicIp.dnsAndPublicIP.publicIPAllocationMethod]",
+      "publicIpSku": "[steps('networkConfig').publicIp.dnsAndPublicIP.sku]",
+      "publicIpNewOrExisting": "[steps('networkConfig').publicIp.dnsAndPublicIP.newOrExistingOrNone]",
+      "publicIpRGName": "[steps('networkConfig').publicIp.dnsAndPublicIP.resourceGroup]",
+      "fileName": "[steps('fileConfig').fileName]",
+      "fileContent": "[steps('fileConfig').fileContent]",
+      "outTagsByResource": "[steps('tags').tagsByResource]"
+    }
+  }
+}
