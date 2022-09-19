@@ -14,10 +14,8 @@ jobs:
 
       - name: Azure Login
         uses: Azure/login@v1.4.6
-        env:
-          client-id: ${{ secrets.AAD_CLIENTID}}
-          tenant-id: ${{ secrets.AAD_TENANTID}}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTIONID}}
+        with:
+          creds: '{"clientId":"${{ secrets.AAD_CLIENTID }}","clientSecret":"${{ secrets.AAD_CLIENTSECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTIONID }}","tenantId":"${{ secrets.AAD_TENANTID }}"}'
 
       - name: Azure CLI Action
         uses: Azure/cli@v1
