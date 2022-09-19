@@ -1,0 +1,21 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: SolutionTemplateBuild
+on:
+  workflow_dispatch:
+  pull_request:
+jobs:
+  ValidateARMTemplates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Generate ARM template from Bicep templates
+        uses: Azure/bicep-build-action@v1.0.1
+        with:
+          bicepFilePath: ./samples/solution-template/base-image-vm/app-contents/mainTemplate.bicep
+          outputFilePath: ./samples/solution-template/base-image-vm/app-contents/mainTemplate.json
+      - name: Run ARM-TTK
+        uses: ./.github/actions/run-armttk
+        with:
+          templatesFolderPath: ./samples/solution-template/base-image-vm/app-contents
