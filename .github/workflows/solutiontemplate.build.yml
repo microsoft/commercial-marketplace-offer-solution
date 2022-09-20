@@ -22,6 +22,7 @@ jobs:
           armttkVersion: aka.ms/arm-ttk-latest
   BuildDraftOffer:
     runs-on: ubuntu-latest
+    needs: ValidateARMTemplates
     steps:
       - name: Checkout
         uses: actions/checkout@v3
