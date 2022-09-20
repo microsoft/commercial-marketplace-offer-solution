@@ -24,22 +24,28 @@ inputs:
     required: true
   AZURE_SUBSCRIPTIONID:
     description: Azure subscription ID
-    required: true
+    required: false
+    default: ''
   AZURE_LOCATION:
     description: Azure location
-    required: true
+    required: false
+    default: ''
   AZURE_ADMINPASSWORD:
     description: Azure admin password
-    required: true
+    required: false
+    default: ''
   AZURE_STORAGEACCOUNTRESOURCEGROUP:
     description: Azure storage account resource group
-    required: true
+    required: false
+    default: ''
   AZURE_STORAGEACCOUNTNAME:
     description: Azure storage account name
-    required: true
+    required: false
+    default: ''
   AZURE_STORAGEACCOUNTKEY:
     description: Azure storage account key
-    required: true
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
