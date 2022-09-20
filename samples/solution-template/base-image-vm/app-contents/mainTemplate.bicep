@@ -170,7 +170,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-03-01' = if (vnetNewOrExis
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' existing = {
-  name: subNetName
+  name: '${vnetName}/${subNetName}'
   scope: resourceGroup(vnetRGName)
 }
 

@@ -19,3 +19,4 @@ jobs:
         uses: ./.github/actions/run-armttk
         with:
           templatesFolderPath: ./samples/solution-template/base-image-vm/app-contents
+          armttkVersion: aka.ms/arm-ttk-latest

@@ -20,7 +20,7 @@ Param (
     [Parameter(Mandatory = $True, HelpMessage = "Parameters file")]
     [String] $parametersFile
 )
-$resourceGroupNameRegex = "^[a-zA-Z0-9\.-_\(\)]{1,89}[a-zA-Z0-9\-\_\(\)]{1}$"
+$resourceGroupNameRegex = "^[a-zA-Z0-9\.\-_\(\)]{1,89}[a-zA-Z0-9\-_\(\)]{1}$"
 $regionRegex = "^[a-z0-9]{1,30}$"
 
 # Validate input parameters

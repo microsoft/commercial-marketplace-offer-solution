@@ -7,3 +7,5 @@ arm-template-toolkit
 scripts/temp_*
 
 **.zip
+
+parameters.json
