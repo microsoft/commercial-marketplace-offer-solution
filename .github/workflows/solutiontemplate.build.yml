@@ -27,6 +27,7 @@ jobs:
       - name: Generate config files
         uses: ./.github/actions/generateCLIConfig
         with:
+          configYamlPath: ${GITHUB_WORKSPACE}/samples/solution-template/base-image-vm/config.yml
           AAD_TENANTID: ${{ secrets.AAD_TENANTID }}
           AAD_CLIENTID: ${{ secrets.AAD_CLIENTID }}
           AAD_CLIENTSECRET: ${{ secrets.AAD_CLIENTSECRET }}
