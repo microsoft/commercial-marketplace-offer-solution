@@ -26,6 +26,18 @@ jobs:
         uses: actions/checkout@v3
       - name: Generate config files
         uses: ./.github/actions/generateCLIConfig
+        with:
+          AAD_TENANTID: ${{ secrets.AAD_TENANTID }}
+          AAD_CLIENTID: ${{ secrets.AAD_CLIENTID }}
+          AAD_CLIENTSECRET: ${{ secrets.AAD_CLIENTSECRET }}
+          PARNERCENTER_MANAGEDAPPPRINCIPALID: ${{ secrets.PARNERCENTER_MANAGEDAPPPRINCIPALID }}
+          PARNERCENTER_PUBLISHERID: ${{ secrets.PARNERCENTER_PUBLISHERID }}
+          AZURE_SUBSCRIPTIONID: ${{ secrets.AZURE_SUBSCRIPTIONID }}'
+          AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
+          AZURE_ADMINPASSWORD: ${{ secrets.AZURE_ADMINPASSWORD }}
+          AZURE_STORAGEACCOUNTRESOURCEGROUP: ${{ secrets.AZURE_STORAGEACCOUNTRESOURCEGROUP }}
+          AZURE_STORAGEACCOUNTNAME: ${{ secrets.AZURE_STORAGEACCOUNTNAME }}
+          AZURE_STORAGEACCOUNTKEY: ${{ secrets.AZURE_STORAGEACCOUNTKEY }}
       - name: Install dependencies
         uses: ./.github/actions/installDependencies
       - name: Install Partner Center CLI
