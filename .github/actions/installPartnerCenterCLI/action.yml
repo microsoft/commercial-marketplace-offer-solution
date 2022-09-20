@@ -1,10 +1,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 name: Install Partner Center CLI
+description: Install Partner Center CLI
 runs:
   using: composite
   steps:
     - name: Install Partner Center CLI
+      shell: bash
       run: |
         pip install --upgrade pip
         pip install az-partner-center-cli

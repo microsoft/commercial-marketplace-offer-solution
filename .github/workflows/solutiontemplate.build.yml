@@ -24,8 +24,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Generate config.json
-        uses: ./.github/actions/setup/generateCLIConfig.yml
+      - name: Generate config files
+        uses: ./.github/actions/generateCLIConfig
       - name: Install dependencies
-        run: ./.github/actions/setup/installDependencies.yml
+        uses: ./.github/actions/installDependencies
+      - name: Install Partner Center CLI
+        uses: ./.github/actions/installPartnerCenterCLI
 
