@@ -1,14 +1,7 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
 name: CreateManagedAppOffer
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
+runs:
     steps:
       - uses: actions/checkout@v3
 
@@ -16,9 +9,3 @@ jobs:
         uses: Azure/login@v1.4.6
         with:
           creds: '{"clientId":"${{ secrets.AAD_CLIENTID }}","clientSecret":"${{ secrets.AAD_CLIENTSECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTIONID }}","tenantId":"${{ secrets.AAD_TENANTID }}"}'
-
-      - name: Azure CLI Action
-        uses: Azure/cli@v1
-        with:
-          inlineScript: |
-            az account show

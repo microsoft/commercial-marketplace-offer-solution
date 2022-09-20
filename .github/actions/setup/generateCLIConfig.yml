@@ -1,0 +1,33 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Generate config files
+description: Generate the config.json and config.yml for the Partner Center CLI
+inputs:
+  configYamlPath:
+    required: false
+    default: ./scripts/config.yml
+runs:
+  using: composite
+  steps:
+  - name: Generate config.json.tmpl
+    uses: cschleiden/replace-tokens@v1.1
+    with:
+      files: '["scripts/config.json.tmpl"]'
+    env:
+      AAD_TENANTID: ${{ secrets.AAD_TENANTID }}
+      AAD_CLIENTID: ${{ secrets.AAD_CLIENTID }}
+      AAD_CLIENTSECRET: ${{ secrets.AAD_CLIENTSECRET }}
+      PARNERCENTER_MANAGEDAPPPRINCIPALID: ${{ secrets.PARNERCENTER_MANAGEDAPPPRINCIPALID }}
+      PARNERCENTER_PUBLISHERID: ${{ secrets.PARNERCENTER_PUBLISHERID }}
+      AZURE_SUBSCRIPTIONID: ${{ secrets.AZURE_SUBSCRIPTIONID }}
+      AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
+      AZURE_ADMINPASSWORD: ${{ secrets.AZURE_ADMINPASSWORD }}
+      AZURE_STORAGEACCOUNTRESOURCEGROUP: ${{ secrets.AZURE_STORAGEACCOUNTRESOURCEGROUP }}
+      AZURE_STORAGEACCOUNTNAME: ${{ secrets.AZURE_STORAGEACCOUNTNAME }}
+      AZURE_STORAGEACCOUNTKEY: ${{ secrets.AZURE_STORAGEACCOUNTKEY }}
+  - name:  Generate Partner Center CLI configuration file
+    run: |
+      config_yaml_path="${{ inputs.configYamlPath }}"
+      echo "Generating Partner Center CLI config file at $config_yaml_path"
+      cd scripts
+      python helpers/generatePCYaml.py config.json.tmpl $config_yaml_path

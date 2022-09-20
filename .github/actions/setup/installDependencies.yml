@@ -1,0 +1,9 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Install dependencies
+runs:
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: ./setup/linux_ubuntu_debian.sh

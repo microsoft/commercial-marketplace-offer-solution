@@ -19,3 +19,13 @@ jobs:
         uses: ./.github/actions/run-armttk
         with:
           templatesFolderPath: ./samples/solution-template/base-image-vm/app-contents
+  BuildDraftOffer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Generate config.json
+        uses: ./.github/actions/setup/generateCLIConfig.yml
+      - name: Install dependencies
+        run: ./.github/actions/setup/installDependencies.yml
+
