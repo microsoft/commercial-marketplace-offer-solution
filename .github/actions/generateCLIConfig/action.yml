@@ -1,0 +1,19 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Generate config YAML file
+description: Generate Partner Center CLI config YAML file
+inputs:
+  configYamlPath:
+    description: Config YAML path
+    required: false
+    default: ./scripts/config.yml
+runs:
+  using: composite
+  steps:
+    - name:  Generate Partner Center CLI configuration file
+      shell: bash
+      run: |
+        config_yaml_path="${{ inputs.configYamlPath }}"
+        echo "Generating Partner Center CLI config file at $config_yaml_path"
+        cd scripts
+        python helpers/generatePCYaml.py config.json.tmpl $config_yaml_path
