@@ -26,7 +26,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Generate config files
+      - name: Generate config.json.tmpl
+        uses: cschleiden/replace-tokens@v1.1
+        with:
+          files: '["scripts/config.json.tmpl"]'
+        env:
+          AAD_TENANTID: ${{ inputs.AAD_TENANTID }}
+          AAD_CLIENTID: ${{ inputs.AAD_CLIENTID }}
+          AAD_CLIENTSECRET: ${{ inputs.AAD_CLIENTSECRET }}
+          PARTNERCENTER_MANAGEDAPPPRINCIPALID: ${{ inputs.PARTNERCENTER_MANAGEDAPPPRINCIPALID }}
+          PARTNERCENTER_PUBLISHERID: ${{ inputs.PARTNERCENTER_PUBLISHERID }}
+      - name: Generate Partner Center CLI config YAML file
         uses: ./.github/actions/generateCLIConfig
         with:
           configYamlPath: ${GITHUB_WORKSPACE}/samples/solution-template/base-image-vm/config.yml
