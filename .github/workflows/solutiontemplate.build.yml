@@ -36,14 +36,9 @@ jobs:
           AAD_CLIENTSECRET: ${{ secrets.AAD_CLIENTSECRET }}
           PARTNERCENTER_MANAGEDAPPPRINCIPALID: ${{ secrets.PARTNERCENTER_MANAGEDAPPPRINCIPALID }}
           PARTNERCENTER_PUBLISHERID: ${{ secrets.PARTNERCENTER_PUBLISHERID }}
-          AZURE_SUBSCRIPTIONID: ${{ secrets.AZURE_SUBSCRIPTIONID }}
       - name: Generate Partner Center CLI config YAML file
         uses: ./.github/actions/generateCLIConfig
         with:
           configYamlPath: ${GITHUB_WORKSPACE}/samples/solution-template/base-image-vm/config.yml
-      - name: Run VM list
-        uses: ./.github/actions/azpc
-        with:
-          offerType: vm
-          command: list
-
+      - name: Install Partner Center CLI
+        uses: ./.github/actions/installPartnerCenterCLI
