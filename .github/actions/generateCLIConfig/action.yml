@@ -3,17 +3,22 @@
 name: Generate config YAML file
 description: Generate Partner Center CLI config YAML file
 inputs:
-  configYamlPath:
-    description: Config YAML path
+  file:
+    description: The configuration file to convert
+    required: true
+    default: config.json.tmpl
+  outputFile:
+    description: The config YAML output path
     required: false
-    default: ./scripts/config.yml
+    default: config.yml
+  workingDirectory:
+    description: The current working directory
+    default: '.'
 runs:
   using: composite
   steps:
     - name:  Generate Partner Center CLI configuration file
       shell: bash
+      working-directory: ${{ inputs.WorkingDirectory }}
       run: |
-        config_yaml_path="${{ inputs.configYamlPath }}"
-        echo "Generating Partner Center CLI config file at $config_yaml_path"
-        cd scripts
-        python helpers/generatePCYaml.py config.json.tmpl $config_yaml_path
+        python $GITHUB_ACTION_PATH/generatePCYaml.py ${{ inputs.file }} ${{ inputs.outputFile }}

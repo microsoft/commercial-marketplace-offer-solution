@@ -39,7 +39,8 @@ jobs:
       - name: Generate Partner Center CLI config YAML file
         uses: ./.github/actions/generateCLIConfig
         with:
-          configYamlPath: ${GITHUB_WORKSPACE}/samples/solution-template/base-image-vm/config.yml
+          workingDirectory: scripts
+          file: config.json.tmpl
+          outputFile: config.yml
       - name: Install Partner Center CLI
         uses: ./.github/actions/installPartnerCenterCLI
-

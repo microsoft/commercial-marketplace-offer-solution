@@ -1,0 +1,43 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Azure Partner Center CLI
+description: Run Azure Partner Center CLI commands
+inputs:
+  offerType:
+    description: The offer type to run command on
+    required: true
+  command:
+    description: The CLI command to run
+    required: true
+  arguments:
+    description: The arguments for the command
+    default: ''
+  version:
+    description: The version of the Azure Partner Center CLI to install, example >=0.0.40
+    default: ''
+  workingDirectory:
+    description: The working directory
+    default: '.'
+outputs:
+  response:
+    description: Response from command
+    value: ${{ steps.run-command.outputs.response }}
+runs:
+  using: composite
+  steps:
+    - name: Install CLI
+      id: install-cli
+      shell: bash
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        pip install --upgrade pip >/dev/null 2>&1 && \
+        pip install --upgrade \
+          az-partner-center-cli${{ inputs.version }} \
+          pyOpenSSL >/dev/null 2>&1 || exit 1
+    - name: Run command
+      id: run-command
+      shell: bash
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        azpc_response=$(azpc ${{ inputs.offerType }} ${{ inputs.command }} ${{ inputs.arguments }})
+        echo "::set-output name=response::$(echo $azpc_response)"
