@@ -9,15 +9,12 @@ inputs:
   command:
     description: The CLI command to run
     required: true
-  planCommand:
-    description: The plan command to run
-    default: ''
   arguments:
     description: The arguments for the command
     default: ''
   version:
     description: The version of the Azure Partner Center CLI to install, example >=0.0.40
-    default: '>=0.0.40'
+    default: ''
   workingDirectory:
     description: The working directory
     default: '.'
@@ -42,5 +39,5 @@ runs:
       shell: bash
       working-directory: ${{ inputs.workingDirectory }}
       run: |
-        azpc_response=$(azpc ${{ inputs.offerType }} ${{ inputs.command }} ${{ inputs.planCommand }} ${{ inputs.arguments }})
+        azpc_response=$(azpc ${{ inputs.offerType }} ${{ inputs.command }} ${{ inputs.arguments }})
         echo "::set-output name=response::$(echo $azpc_response)"
