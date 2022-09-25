@@ -35,7 +35,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.workingDirectory }}
       run: |
-        $GITHUB_ACTION_PATH/package_zip.sh --contents-folder "${{ inputs.applicationDirectory }}/app-contents" --output-file "${{ inputs.applicationDirectory }}/marketplacePackage.zip"
+        $GITHUB_ACTION_PATH/zip_package.sh --contents-folder "${{ inputs.applicationDirectory }}/app-contents" --output-file "${{ inputs.applicationDirectory }}/marketplacePackage.zip"
       if: ${{ (inputs.offerType == 'st' || inputs.offerType == 'ma') && (inputs.command == 'create' || inputs.command == 'update' || inputs.command == 'create-plan' || inputs.command == 'update-plan') }}
     - name: Set reseller channel state
       shell: bash
