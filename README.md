@@ -1,4 +1,4 @@
-# Azure Marketplace Samples and Scripts
+# Commercial Marketplace Samples and Scripts
 This repository contains a set of samples and scripts that can be used a starting point for customers to build their own Azure Marketplace offerings.
 
 ## Prerequisites

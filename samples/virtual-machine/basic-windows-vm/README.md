@@ -28,6 +28,7 @@ There are a couple of configuration files that are required for the following st
     * **publisherId**: The Partner Center publishing account ID
     * **location**: What region will the Azure resources be deployed to
     * **adminPassword**: The admin password for the virtual machine configuration
+    * **storageAccountResourceGroup**: The resource group of the storage account created above
     * **storageAccountName**: The name of the storage account created above
     * **storageAccountKey**: One of the access keys of the storage account created above
 
@@ -48,6 +49,7 @@ There are a couple of configuration files that are required for the following st
     "subscriptionId": "<Azure Subscription>",
     "location": "<Azure Region>",
     "adminPassword": "<Admin Password>",
+    "storageAccountResourceGroup": "<Azure Storage Account Resource Group>",
     "storageAccountName": "<Azure Storage Name>",
     "storageAccountKey": "<Azure Storage Access Key>"
   }
@@ -91,7 +93,7 @@ Once the draft offer created in the above step has been reviewed and confirmed, 
 
 To start the publishing process:
 ```
-.\vmOfferPublish.ps1 -configFile config.json -vmOfferConfigFile ..\samples\virtual-machine\basic-windows-vm\vmOfferConfig.json -notificationEmails -notificationEmails "<Email Address/es>"
+.\vmOfferPublish.ps1 -configFile config.json -vmOfferConfigFile ..\samples\virtual-machine\basic-windows-vm\vmOfferConfig.json -notificationEmails "<Email Address/es>"
 ```
 
 
