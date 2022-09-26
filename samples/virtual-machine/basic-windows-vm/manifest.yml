@@ -1,9 +1,0 @@
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License.
-name: "contosovirtualmachine"
-app_path: "../samples/virtual-machine/basic-windows-vm/"
-json_listing_config: "vmOfferConfig.json"
-logo_small: "../samples/virtual-machine/basic-windows-vm/logos/r_48_48.png"
-logo_medium: "../samples/virtual-machine/basic-windows-vm/logos/r_90_90.png"
-logo_large: "../samples/virtual-machine/basic-windows-vm/logos/r_216_216.png"
-logo_wide: "../samples/virtual-machine/basic-windows-vm/logos/r_255_115.png"
