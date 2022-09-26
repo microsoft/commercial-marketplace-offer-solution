@@ -95,28 +95,6 @@ To start the publishing process:
 ```
 
 
-## Deploy the Sample using Azure DevOps
-A simpler approach to deploying your samples is to use the pre-built Azure DevOps pipeline files. These pipelines will manage the virtual machine image and offer creation, as well as publishing.
-
-1. Fork the [repository](https://dev.azure.com/AZGlobal/Azure%20Global%20CAT%20Engineering/_git/AGCI-Marketplace-Scripts).
-2. [Create a Service Principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) so that the pipeline can have access to your Azure and Partner Center resources.
-3. [Create an Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) to store your Azure and Partner Center secrets. Ensure that your Service Principal has access to the Key Vault.
-4. [Create a Service Connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) in Azure DevOps and connect it to your newly created Service Principal.
-5. Create a variable group in Azure DevOps for your secrets. Be sure to enable "Link secrets from an Azure key vault as variables".
-6. [Create the pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=java%2Ctfs-2018-2%2Cbrowser) in Azure DevOps:
-    * Create a new pipeline to create the virtual machine offer, selecting the existing YAML pipeline file [createVmOffer.yml](../../../createVmOffer.yml).
-        * Replace the `serviceConnection` value with your newly created Service Connection name.
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-    * Create a new pipeline to publish your virtual machine offer, selecting the existing YAML pipeline file [publishVmOffer.yml](../../../publishVmOffer.yml).
-        * Replace the `serviceConnection` value with your Service Connection name.
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-7. [Create a branch policy](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/deploy-pull-request-builds?view=azure-devops#set-up-branch-policy-for-azure-repos) on the branch of your forked repository so that the virtual machine image and offer creation pipeline will be triggered when a pull request is created, and the publish pipeline is triggered on merge into `main`.
-8. Make a change to the virtual machine sample files, commit the change, and raise a pull request.
-9. Merge the pull request into the `main` branch.
-
-
 ## Modifying the Sample For Your Use Case
 
 You can use this sample as a base for your own VM offer. Modify the noted files below to suit your needs.
