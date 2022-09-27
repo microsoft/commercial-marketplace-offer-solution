@@ -63,7 +63,7 @@ Update the [variables.pkr.json](variables.pkr.json) to match your newly created 
 
 Build the image.
 ```
-./imageBuild.ps1 -assetsFolder ../samples/virtual-machine/basic-windows-vm
+./build_virtualMachineImage.ps1 -assetsFolder ../samples/virtual-machine/basic-windows-vm
 ```
 
 Once the script has completed successfully, it will output the URI the VHD created in the storage account. Take a copy of the URI for the following step.
@@ -72,16 +72,16 @@ Once the script has completed successfully, it will output the URI the VHD creat
 Before creating a virtual machine offer using the image created in the step above, we need to run it through a validation process to ensure that the image meets all of the Azure Marketplace publishing requirements. The VHD URI returned in the previous step will be required.
 
 ```
-.\validateVmImage.ps1 -vhdUri "<VHD URI>" -configJsonFile config.json
+./validate_virtualMachineImage.ps1 -vhdUri "<VHD URI>" -configJsonFile config.json
 ```
 
 Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/azure-vm-image-test) on more information about validating your virtual machine image.
 
 ### Creating a Virtual Machine Offer
-Create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
+Before we create the virtual machine offer, we need to update the `publisherId` in the [offer listing config](vmOfferConfig.json). Once updated, we can create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
 
 ```
-.\vmOfferAdd.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../samples/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../samples/virtual-machine/basic-windows-vm/logos
+./add_virtualMachineOffer.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../samples/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../samples/virtual-machine/basic-windows-vm/logos
 ```
 
 During the execution of this script, dynamic variables will be parsed into the `vmOfferConfig.json` file, and the script exports the updated copy (`parsed_vmOfferConfig.json`). The exported copy will contain the URIs (including the Shared Access Signatures) of the VHD image and the uploaded offer logo images.
@@ -93,7 +93,8 @@ Once the draft offer created in the above step has been reviewed and confirmed, 
 
 To start the publishing process:
 ```
-.\vmOfferPublish.ps1 -configFile config.json -vmOfferConfigFile ..\samples\virtual-machine\basic-windows-vm\vmOfferConfig.json -notificationEmails "<Email Address/es>"
+./helpers/generatePCYaml.py config.json config.yml
+azpc vm publish --name "<Offer Name>" --app-path ../samples/virtual-machine/basic-windows-vm --config-yml config.yml --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
 ```
 
 
