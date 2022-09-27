@@ -1,9 +1,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
-name: SolutionTemplateBuild
+name: Solution Template PR
 on:
   workflow_dispatch:
   pull_request:
+    branches: [ $default-branch ]
 jobs:
   ValidateARMTemplates:
     runs-on: ubuntu-latest
@@ -20,27 +21,26 @@ jobs:
         with:
           templatesFolderPath: ./samples/solution-template/base-image-vm/app-contents
           armttkVersion: aka.ms/arm-ttk-latest
-  BuildDraftOffer:
+  VerifyOfferCreation:
     runs-on: ubuntu-latest
     needs: ValidateARMTemplates
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Generate config.json.tmpl
-        uses: cschleiden/replace-tokens@v1.1
+      - name: Build and create/update offer
+        uses: ./.github/actions/commercial-marketplace
         with:
-          files: '["scripts/config.json.tmpl"]'
-        env:
-          AAD_TENANTID: ${{ secrets.AAD_TENANTID }}
-          AAD_CLIENTID: ${{ secrets.AAD_CLIENTID }}
-          AAD_CLIENTSECRET: ${{ secrets.AAD_CLIENTSECRET }}
-          PARTNERCENTER_MANAGEDAPPPRINCIPALID: ${{ secrets.PARTNERCENTER_MANAGEDAPPPRINCIPALID }}
-          PARTNERCENTER_PUBLISHERID: ${{ secrets.PARTNERCENTER_PUBLISHERID }}
-      - name: Generate Partner Center CLI config YAML file
-        uses: ./.github/actions/generateCLIConfig
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          offerType: st
+          command: create
+          applicationName: contoso-st
+          planName: base-image-vm
+          applicationDirectory: ./samples/solution-template/base-image-vm
+      - name: Delete offer
+        uses: ./.github/actions/commercial-marketplace
         with:
-          workingDirectory: scripts
-          file: config.json.tmpl
-          outputFile: config.yml
-      - name: Install Partner Center CLI
-        uses: ./.github/actions/installPartnerCenterCLI
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          offerType: st
+          command: delete
+          applicationName: contoso-st
+        timeout-minutes: 5
