@@ -88,11 +88,6 @@ else
 Write-Output "Reading configuration files..."
 $config = Get-Configuration $configFile $vmOfferConfigFile $logoPath
 
-# Generate config.yml file
-$configYmlPath = "config.yml"
-Write-Output "Generating Partner Center CLI config file: $configYmlPath..."
-python ./helpers/generatePCYaml.py $configFile $configYmlPath
-
 $logoContainerName = "logos"
 $start = (((Get-Date).ToUniversalTime()).addDays(-1)).ToString("yyyy-MM-ddTHH:mm:ssZ")
 $end = (((Get-Date).ToUniversalTime()).addYears(1)).ToString("yyyy-MM-ddTHH:mm:ssZ")
@@ -167,7 +162,7 @@ Out-File -InputObject $offerListingConfig -FilePath $parsedOfferListingConfigPat
 
 try {
     Write-Output "Creating the virtual machine offer..."
-    $cliOutput = azpc vm create --name $config.offerName --config-yml $configYmlPath --config-json $parsedOfferListingConfigFile --app-path $config.appPath
+    $cliOutput = azpc vm create --name $config.offerName --config-json $parsedOfferListingConfigFile --app-path $config.appPath
 
     if (($LASTEXITCODE -ne 0) -or ($cliOutput -contains "ConnectionError")) {
         throw $cliOutput
@@ -182,6 +177,5 @@ try {
 } finally {
     Write-Output "Cleaning up..."
     az storage container delete --name $logoContainerName --account-name $config.storageAccountName --account-key $config.storageAccountKey
-    Remove-Item $configYmlPath
     exit 0
 }

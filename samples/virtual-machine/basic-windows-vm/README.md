@@ -93,8 +93,7 @@ Once the draft offer created in the above step has been reviewed and confirmed, 
 
 To start the publishing process:
 ```
-./helpers/generatePCYaml.py config.json config.yml
-azpc vm publish --name "<Offer Name>" --app-path ../samples/virtual-machine/basic-windows-vm --config-yml config.yml --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
+azpc vm publish --name "<Offer Name>" --app-path ../samples/virtual-machine/basic-windows-vm --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
 ```
 
 
