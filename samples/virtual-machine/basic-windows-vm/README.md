@@ -28,6 +28,7 @@ There are a couple of configuration files that are required for the following st
     * **publisherId**: The Partner Center publishing account ID
     * **location**: What region will the Azure resources be deployed to
     * **adminPassword**: The admin password for the virtual machine configuration
+    * **storageAccountResourceGroup**: The resource group of the storage account created above
     * **storageAccountName**: The name of the storage account created above
     * **storageAccountKey**: One of the access keys of the storage account created above
 
@@ -48,6 +49,7 @@ There are a couple of configuration files that are required for the following st
     "subscriptionId": "<Azure Subscription>",
     "location": "<Azure Region>",
     "adminPassword": "<Admin Password>",
+    "storageAccountResourceGroup": "<Azure Storage Account Resource Group>",
     "storageAccountName": "<Azure Storage Name>",
     "storageAccountKey": "<Azure Storage Access Key>"
   }
@@ -61,7 +63,7 @@ Update the [variables.pkr.json](variables.pkr.json) to match your newly created 
 
 Build the image.
 ```
-./imageBuild.ps1 -assetsFolder ../samples/virtual-machine/basic-windows-vm
+./build_virtualMachineImage.ps1 -assetsFolder ../samples/virtual-machine/basic-windows-vm
 ```
 
 Once the script has completed successfully, it will output the URI the VHD created in the storage account. Take a copy of the URI for the following step.
@@ -70,16 +72,16 @@ Once the script has completed successfully, it will output the URI the VHD creat
 Before creating a virtual machine offer using the image created in the step above, we need to run it through a validation process to ensure that the image meets all of the Azure Marketplace publishing requirements. The VHD URI returned in the previous step will be required.
 
 ```
-.\validateVmImage.ps1 -vhdUri "<VHD URI>" -configJsonFile config.json
+./validate_virtualMachineImage.ps1 -vhdUri "<VHD URI>" -configJsonFile config.json
 ```
 
 Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/azure-vm-image-test) on more information about validating your virtual machine image.
 
 ### Creating a Virtual Machine Offer
-Create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
+Before we create the virtual machine offer, we need to update the `publisherId` in the [offer listing config](vmOfferConfig.json). Once updated, we can create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
 
 ```
-.\vmOfferAdd.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../samples/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../samples/virtual-machine/basic-windows-vm/logos
+./add_virtualMachineOffer.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../samples/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../samples/virtual-machine/basic-windows-vm/logos
 ```
 
 During the execution of this script, dynamic variables will be parsed into the `vmOfferConfig.json` file, and the script exports the updated copy (`parsed_vmOfferConfig.json`). The exported copy will contain the URIs (including the Shared Access Signatures) of the VHD image and the uploaded offer logo images.
@@ -91,30 +93,8 @@ Once the draft offer created in the above step has been reviewed and confirmed, 
 
 To start the publishing process:
 ```
-.\vmOfferPublish.ps1 -configFile config.json -vmOfferConfigFile ..\samples\virtual-machine\basic-windows-vm\vmOfferConfig.json -notificationEmails -notificationEmails "<Email Address/es>"
+azpc vm publish --name "<Offer Name>" --app-path ../samples/virtual-machine/basic-windows-vm --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
 ```
-
-
-## Deploy the Sample using Azure DevOps
-A simpler approach to deploying your samples is to use the pre-built Azure DevOps pipeline files. These pipelines will manage the virtual machine image and offer creation, as well as publishing.
-
-1. Fork the [repository](https://dev.azure.com/AZGlobal/Azure%20Global%20CAT%20Engineering/_git/AGCI-Marketplace-Scripts).
-2. [Create a Service Principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) so that the pipeline can have access to your Azure and Partner Center resources.
-3. [Create an Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) to store your Azure and Partner Center secrets. Ensure that your Service Principal has access to the Key Vault.
-4. [Create a Service Connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) in Azure DevOps and connect it to your newly created Service Principal.
-5. Create a variable group in Azure DevOps for your secrets. Be sure to enable "Link secrets from an Azure key vault as variables".
-6. [Create the pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=java%2Ctfs-2018-2%2Cbrowser) in Azure DevOps:
-    * Create a new pipeline to create the virtual machine offer, selecting the existing YAML pipeline file [createVmOffer.yml](../../../createVmOffer.yml).
-        * Replace the `serviceConnection` value with your newly created Service Connection name.
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-    * Create a new pipeline to publish your virtual machine offer, selecting the existing YAML pipeline file [publishVmOffer.yml](../../../publishVmOffer.yml).
-        * Replace the `serviceConnection` value with your Service Connection name.
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-7. [Create a branch policy](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/deploy-pull-request-builds?view=azure-devops#set-up-branch-policy-for-azure-repos) on the branch of your forked repository so that the virtual machine image and offer creation pipeline will be triggered when a pull request is created, and the publish pipeline is triggered on merge into `main`.
-8. Make a change to the virtual machine sample files, commit the change, and raise a pull request.
-9. Merge the pull request into the `main` branch.
 
 
 ## Modifying the Sample For Your Use Case
