@@ -120,3 +120,7 @@ To start the publishing process:
 ```
 ./solutionTemplateOfferPublish.ps1 -manifestFile ../marketplace/application/base-image-vm/manifest.yml
 ```
+
+### Automating with GitHub Workflows
+
+A set of [starter workflows](../../../.github/workflow-templates/) are available for use with this sample. To use them, follow the [instructions](https://docs.github.com/en/actions/using-workflows/using-starter-workflows#using-starter-workflows) in the GitHub documentation.
