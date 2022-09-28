@@ -14,12 +14,12 @@ jobs:
       - name: Generate ARM template from Bicep templates
         uses: Azure/bicep-build-action@v1.0.1
         with:
-          bicepFilePath: ./samples/solution-template/base-image-vm/app-contents/mainTemplate.bicep
-          outputFilePath: ./samples/solution-template/base-image-vm/app-contents/mainTemplate.json
+          bicepFilePath: ./marketplace/application/base-image-vm/app-contents/mainTemplate.bicep
+          outputFilePath: ./marketplace/application/base-image-vm/app-contents/mainTemplate.json
       - name: Run ARM-TTK
         uses: ./.github/actions/run-armttk
         with:
-          templatesFolderPath: ./samples/solution-template/base-image-vm/app-contents
+          templatesFolderPath: ./marketplace/application/base-image-vm/app-contents
           armttkVersion: aka.ms/arm-ttk-latest
   VerifyOfferCreation:
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
           command: create
           applicationName: contoso-st
           planName: base-image-vm
-          applicationDirectory: ./samples/solution-template/base-image-vm
+          applicationDirectory: ./marketplace/application/base-image-vm
       - name: Delete offer
         uses: ./.github/actions/commercial-marketplace
         with:
