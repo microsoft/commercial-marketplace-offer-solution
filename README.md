@@ -50,6 +50,20 @@ This sample demonstrates how to build a solution template Azure Application offe
 
 This sample demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer.
 
+## Automation
+
+GitHub [actions](.github/actions/) and [starter workflows](.github/workflow-templates/) are provided to automate the build, test and publish process for Azure Marketplace offers. To use an action, refer to it as follows in your workflow:
+```
+microsoft/commercial-marketplace-offer-solution/.github/actions/[ACTION DIRECTORY]
+```
+For example:
+```
+steps:
+  - name: Build and create/update offer
+    uses: microsoft/commercial-marketplace-offer-solution/.github/actions/commercial-marketplace
+```
+Refer to the GitHub documentation for more information on using [starter workflows](https://docs.github.com/en/actions/using-workflows/using-starter-workflows).
+
 ### Future Work
 This repository is still under development. We are working to add more scripts for testing and automation.
 
