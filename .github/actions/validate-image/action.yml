@@ -1,0 +1,33 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Validate Image
+description: Validate virtual machine image
+inputs:
+  azureCredentials:
+    description: Service prinpical Azure credentials
+    required: true
+  vhdUri:
+    description: The URI of the VHD image to validate
+    required: true
+  workingDirectory:
+    description: The working directory
+    default: '.'
+# outputs:
+#   success:
+#     description: The image VHD URI
+#     value: ${{ steps.run-packer.outputs.vhdUri }}
+runs:
+  using: composite
+  steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azureCredentials }}
+    - name: Validate Image
+      id: validate-image
+      shell: bash
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        az account show
+        echo ${{ inputs.vhdUri }}
+
