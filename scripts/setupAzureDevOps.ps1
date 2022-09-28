@@ -92,7 +92,7 @@ else
 
 Write-Output "Adding pipeline folder path ($pipelineFolderPath) and pipelines..."
 az pipelines folder create --path $pipelineFolderPath --description "Pipelines for creating and publishing Azure Marketplace offers"
-az pipelines create --name "AZMP Solution Template PR" --description "Solution template offer PR build and test" --folder-path $pipelineFolderPath --repository "AGCI-Marketplace-Scripts" --branch "main" --yml-path "samples/solution-template/base-image-vm/solutiontemplate.pr.yml"
-az pipelines create --name "AZMP Solution Template RC" --description "Solution template offer release candidate" --folder-path $pipelineFolderPath --repository "AGCI-Marketplace-Scripts" --branch "main" --yml-path "samples/solution-template/base-image-vm/solutiontemplate.publish.yml"
+az pipelines create --name "AZMP Solution Template PR" --description "Solution template offer PR build and test" --folder-path $pipelineFolderPath --repository "AGCI-Marketplace-Scripts" --branch "main" --yml-path "marketplace/application/base-image-vm/solutiontemplate.pr.yml"
+az pipelines create --name "AZMP Solution Template RC" --description "Solution template offer release candidate" --folder-path $pipelineFolderPath --repository "AGCI-Marketplace-Scripts" --branch "main" --yml-path "marketplace/application/base-image-vm/solutiontemplate.publish.yml"
 az pipelines create --name "AZMP Virtual Machine PR" --description "Virtual machine offer PR build and test" --folder-path $pipelineFolderPath --repository "AGCI-Marketplace-Scripts" --branch "main" --yml-path "createVmOffer.yml"
 az pipelines create --name "AZMP Virtual Machine RC" --description "Virtual machine offer PR build and test" --folder-path $pipelineFolderPath --repository "AGCI-Marketplace-Scripts" --branch "main" --yml-path "publishVmOffer.yml"

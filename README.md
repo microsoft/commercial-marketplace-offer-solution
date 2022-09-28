@@ -1,4 +1,4 @@
-# Azure Marketplace Samples and Scripts
+# Commercial Marketplace Samples and Scripts
 This repository contains a set of samples and scripts that can be used a starting point for customers to build their own Azure Marketplace offerings.
 
 ## Prerequisites
@@ -42,11 +42,11 @@ deactivate
 ## Samples
 Use the following samples to build your own Azure Marketplace offerings. Each sample includes a README file that contains instructions on how to build the sample and modify it for your use case.
 
-### [Solution Template with Custom Script Extension](samples/solution-template/base-image-vm/README.md)
+### [Solution Template with Custom Script Extension](marketplace/application/base-image-vm/README.md)
 
 This sample demonstrates how to build a solution template Azure Application offer. This sample deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script after the VM has been provisioned.
 
-### [Windows Server 2019 Virtual Machine with Added Tools](samples/virtual-machine/basic-windows-vm/README.md)
+### [Windows Server 2019 Virtual Machine with Added Tools](marketplace/virtual-machine/basic-windows-vm/README.md)
 
 This sample demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer.
 

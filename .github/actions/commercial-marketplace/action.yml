@@ -1,0 +1,107 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Azure Commercial Marketplace
+description: Build and publish Azure Commercial Marketplace offers
+inputs:
+  azureCredentials:
+    description: Service prinpical Azure credentials
+    required: true
+  offerType:
+    description: The offer type to run command on
+    required: true
+  command:
+    description: 'The command to run. Options: create, update, publish, delete'
+    required: true
+  applicationName:
+    description: The application name / offer ID
+    required: true
+  planName:
+    description: The plan name
+    default: ''
+  applicationDirectory:
+    description: The path to your offer's contents
+    default: ''
+  workingDirectory:
+    description: The working directory
+    default: '.'
+runs:
+  using: composite
+  steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azureCredentials }}
+    - name: Package zip file
+      shell: bash
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        $GITHUB_ACTION_PATH/zip_package.sh --contents-folder "${{ inputs.applicationDirectory }}/app-contents" --output-file "${{ inputs.applicationDirectory }}/marketplacePackage.zip"
+      if: ${{ (inputs.offerType == 'st' || inputs.offerType == 'ma') && (inputs.command == 'create' || inputs.command == 'update' || inputs.command == 'create-plan' || inputs.command == 'update-plan') }}
+    - name: Set reseller channel state
+      shell: bash
+      working-directory: ${{ inputs.applicationDirectory }}
+      run: |
+        reseller_config=$(cat listing_config.json | jq -r '.resell.resellerChannelState')
+        if [[ $reseller_config -eq "null" ]]; then
+          reseller_config="Disabled"
+        fi
+        echo "RESELLER_CHANNEL=$reseller_config" >> $GITHUB_ENV
+      if: ${{ inputs.command == 'create' || inputs.command == 'update' }}
+    - name: Upsert offer
+      id: upsert-offer
+      uses: ./.github/actions/azpc
+      with:
+        command: create
+        offerType: ${{ inputs.offerType }}
+        arguments: '--update --name ${{ inputs.applicationName }} --config-json listing_config.json --app-path .'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ inputs.command == 'create' }}
+    - name: Update offer
+      id: update-offer
+      uses: ./.github/actions/azpc
+      with:
+        command: update
+        offerType: ${{ inputs.offerType }}
+        arguments: '--name ${{ inputs.applicationName }} --config-json listing_config.json --app-path .'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ inputs.command == 'update' }}
+    - name: Upsert plan
+      uses: ./.github/actions/azpc
+      with:
+        command: plan create
+        offerType: ${{ inputs.offerType }}
+        arguments: '--update --name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }} --config-json listing_config.json --app-path .'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ (inputs.command == 'create' && inputs.planName != '') || inputs.command == 'create-plan' }}
+    - name: Update plan
+      uses: ./.github/actions/azpc
+      with:
+        command: plan update
+        offerType: ${{ inputs.offerType }}
+        arguments: '--name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }} --config-json listing_config.json --app-path .'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ (inputs.command == 'update' && inputs.planName != '') || inputs.command == 'update-plan' }}
+    - name: Delete offer
+      id: delete-offer
+      uses: ./.github/actions/azpc
+      with:
+        command: delete
+        offerType: ${{ inputs.offerType }}
+        arguments: '--name ${{ inputs.applicationName }}'
+      if: ${{ inputs.command == 'delete' }}
+    - name: Delete plan
+      uses: ./.github/actions/azpc
+      with:
+        command: plan delete
+        offerType: ${{ inputs.offerType }}
+        arguments: '--name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }}'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ inputs.command == 'delete-plan' }}
+    - name: Publish offer
+      uses: ./.github/actions/azpc
+      with:
+        command: publish
+        offerType: ${{ inputs.offerType }}
+        arguments: '--name ${{ inputs.applicationName }}'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ inputs.command == 'publish' }}

@@ -68,8 +68,8 @@
     "tenant_id"     : "<AAD Tenant Id>",
     "application_id": "<AAD Application ID>"
   },
-  "plan_overview"          : [
-    {
+  "plan_overview"          : {
+    "base-image-vm": {
       "plan_listing"            : {
         "title"              : "Base Image VM",
         "shortDescription"  : "Short description",
@@ -87,8 +87,41 @@
         "version"               : "0.0.1",
         "allow_jit_access"      : false
       }
+    },
+    "base-image-vm-app":{
+      "plan_listing"            : {
+        "title"              : "Base Image VM",
+        "shortDescription"  : "Short description",
+        "description"        : "<p>This is a description that uses html tags</p>"
+      },
+      "pricing_and_availability": {
+        "visibility"                 : "private",
+        "azure_private_subscriptions": [
+          {
+            "ID": "1bb6badf-d123-41a7-bda0-8a9e8d9f1b67"
+          }
+        ]
+      },
+      "technical_configuration" : {
+        "version"               : "0.0.1",
+        "allowedCustomerActions": [
+          "Microsoft.Storage/*;Microsoft.KeyVault/*;Microsoft.ManagedIdentity/*;Microsoft.Network/*;Microsoft.Resources/*;Microsoft.Compute/*;Microsoft.ContainerService/*"
+        ],
+        "allowedDataActions"    : [
+          "Microsoft.Storage/*;Microsoft.KeyVault/*;Microsoft.ManagedIdentity/*;Microsoft.Network/*;Microsoft.Resources/*;Microsoft.Compute/*;Microsoft.ContainerService/*"
+        ],
+        "tenant_id"             : "<AAD Tenant Id>",
+        "authorizations"        : [
+          {
+            "id"  : "<AAD Application ID>",
+            "role": "Owner"
+          }
+        ],
+        "policy_settings"       : [],
+        "allow_jit_access"      : false
+      }
     }
-  ],
+  },
   "co-sell"                : {},
   "resell"                 : {}
 }
