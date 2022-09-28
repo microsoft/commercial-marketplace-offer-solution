@@ -88,7 +88,7 @@
         "allow_jit_access"      : false
       }
     },
-    "base-image-vm-app":{
+    "base-image-vm-appg":{
       "plan_listing"            : {
         "title"              : "Base Image VM",
         "shortDescription"  : "Short description",
