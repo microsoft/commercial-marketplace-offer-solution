@@ -37,23 +37,6 @@ Cleanup the deployment. Replace "MyResourceGroup" with your own resource group n
 az group create --name MyResourceGroup
 ```
 
-## Create and publish the Solution Template offer using Azure DevOps
-A simpler approach to deploying your samples is to use the pre-built Azure DevOps pipeline files. These pipelines will manage the solution template offer creation, as well as publishing.
-
-1. Fork the [repository](https://dev.azure.com/AZGlobal/Azure%20Global%20CAT%20Engineering/_git/AGCI-Marketplace-Scripts).
-2. [Create a Service Principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) so that the pipeline can have access to your Azure and Partner Center resources.
-3. [Create an Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) to store your Azure and Partner Center secrets. Ensure that your Service Principal has access to the Key Vault.
-4. Create a variable group in Azure DevOps for your secrets. Be sure to enable "Link secrets from an Azure key vault as variables".
-5. [Create the pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=java%2Ctfs-2018-2%2Cbrowser) in Azure DevOps:
-    * Create a new pipeline to create the solution template offer, selecting the existing YAML pipeline file [solutiontemplate.pr.yml](solutiontemplate.pr.yml).
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-    * Create a new pipeline to publish your solution template offer, selecting the existing YAML pipeline file [solutiontemplate.publish.yml](solutiontemplate.publish.yml).
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-6. [Create a branch policy](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/deploy-pull-request-builds?view=azure-devops#set-up-branch-policy-for-azure-repos) on the branch of your forked repository so that the solution template offer creation pipeline will be triggered when a pull request is created, and the publish pipeline is triggered on merge into `main`.
-6. Make a change to the solution template sample files, commit the change, and raise a pull request.
-7. Merge the pull request into the `main` branch.
 
 ## Modifying the Sample For Your Use Case
 
