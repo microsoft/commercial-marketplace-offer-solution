@@ -65,11 +65,6 @@ if ("" -ne $manifestFile)
 
 Set-Location $assetsFolder
 
-# Generate config.yml file
-$configYmlPath = "config.yml"
-Write-Output "Generating Partner Center CLI config file: $configYmlPath"
-python $scriptFolder/helpers/generatePCYaml.py $configFilePath $configYmlPath
-
 # Read manifest.yml
 $manifestJsonPath = "convertedManifest.json"
 python $scriptFolder/helpers/convertYamlToJson.py $manifestYmlPath $manifestJsonPath
@@ -112,12 +107,11 @@ Remove-Item -Path $releaseFolder -Recurse -Force
 # Create plan
 Set-Location $assetsFolder
 Write-Output "Creating plan $planName for offer $offerName..."
-&{azpc st plan create --update --name $offerName --plan_name $planName --config-json $manifest.json_listing_config --app-path $manifest.app_path} *> $createResultFile
+&{azpc $offerType plan create --update --name $offerName --plan-name $planName --config-json $manifest.json_listing_config --app-path $manifest.app_path} *> $createResultFile
 Write-Output "Plan $planName for offer $offerName created or updated."
 
 # Clean up
 Remove-Item $createResultFile
-Remove-Item $configYmlPath
 Remove-Item "marketplacePackage.zip"
 
 Set-Location $scriptFolder
