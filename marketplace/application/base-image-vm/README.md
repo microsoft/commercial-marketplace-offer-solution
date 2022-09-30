@@ -78,7 +78,7 @@ Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/a
 
 ### Create/Update the Azure Application Solution Template & Managed Application Offer
 
-A [script](../../../scripts/solutionTemplateOfferAddUpdate.ps1) is provided in the `scripts` folder of this repository to create the Azure Application (Solution Template and/or Managed Application) offer.
+A [script](../../../scripts/addUpdate_azureApplicationOffer.ps1) is provided in the `scripts` folder of this repository to create the Azure Application (Solution Template and/or Managed Application) offer.
 
 The sample [offer listing config](./listing_config.json) contains 2 plan options:
 - Solution Template (`base-image-vm`)
@@ -89,7 +89,7 @@ The offer type that is created refers to the plan configured in the [manifest fi
 The script will package the solution, create an offer if it does not already exist, create a plan if it does not already exist, and upload the solution package and offer assets (logos). You can also use this script to update the offer or plan.
 
 ```
-./solutionTemplateOfferAddUpdate.ps1 -assetsFolder ../marketplace/application/base-image-vm
+./addUpdate_azureApplicationOffer.ps1 -assetsFolder ../marketplace/application/base-image-vm
 ```
 
 Before running the script, you will need to set the following variables in the [configuration file](../../../scripts/config.json):
