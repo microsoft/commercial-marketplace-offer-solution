@@ -1,6 +1,6 @@
-# Sample - Solution Template with Custom Script Extension
+# Sample - Solution Template or Managed Application with Custom Script Extension
 
-This sample demonstrates how to build a solution template Azure Application offer. This sample deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script (`WriteText.ps1`) after the VM has been provisioned.
+This sample demonstrates how to build a solution template or managed application Azure Application offer. This sample deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script (`WriteText.ps1`) after the VM has been provisioned.
 
 Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/plan-azure-app-solution-template) for more information about the solution template offer type.
 
@@ -29,7 +29,7 @@ Create a `config.json` from from the template file [config.json.tmpl](../../../s
 Deploy the solution. Replace "MyResourceGroup" with your own resource group name. If you have a parameters file, you can use the `-parametersFile` parameter to specify the file.
 ```
 ./package.ps1 -assetsFolder ../marketplace/application/base-image-vm/app-contents -releaseFolder release_01
-./devDeploy.ps1 -resourceGroup MyResourceGroup -assetsFolder ./release_01/assets -parametersFile myparameters.json
+./devDeploy.ps1 -resourceGroup MyResourceGroup -location westus -assetsFolder ./release_01/assets -parametersFile myparameters.json
 ```
 
 Cleanup the deployment. Replace "MyResourceGroup" with your own resource group name.
@@ -76,9 +76,17 @@ If you have already created an offer in the Azure Marketplace, you can include t
 
 Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/plan-azure-app-solution-template#deployment-package) for more information on how to package your solution template offer.
 
-### Create/Update the Azure Application Solution Template Offer
+### Create/Update the Azure Application Solution Template & Managed Application Offer
 
-A [script](../../../scripts/solutionTemplateOfferAddUpdate.ps1) is provided in the `scripts` folder of this repository to create the Azure Application Solution Template offer. The script will package the solution, create an offer if it does not already exist, create a plan if it does not already exist, and upload the solution package and offer assets (logos). You can also use this script to update the offer or plan.
+A [script](../../../scripts/solutionTemplateOfferAddUpdate.ps1) is provided in the `scripts` folder of this repository to create the Azure Application (Solution Template and/or Managed Application) offer.
+
+The sample [offer listing config](./listing_config.json) contains 2 plan options:
+- Solution Template (`base-image-vm`)
+- Managed Application (`base-image-vm-app`)
+
+The offer type that is created refers to the plan configured in the [manifest file](./manifest.yml).
+
+The script will package the solution, create an offer if it does not already exist, create a plan if it does not already exist, and upload the solution package and offer assets (logos). You can also use this script to update the offer or plan.
 
 ```
 ./solutionTemplateOfferAddUpdate.ps1 -assetsFolder ../marketplace/application/base-image-vm
@@ -101,7 +109,7 @@ Once the draft offer created in the above step has been reviewed and confirmed, 
 
 To start the publishing process:
 ```
-./solutionTemplateOfferPublish.ps1 -manifestFile ../marketplace/application/base-image-vm/manifest.yml
+azpc app publish --name "<offer name>"
 ```
 
 ### Automating with GitHub Workflows
