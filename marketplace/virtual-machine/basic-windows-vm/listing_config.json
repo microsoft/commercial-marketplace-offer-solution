@@ -1,7 +1,7 @@
 {
-    "publisherId": "{{publisherId}}",
+    "publisherId": "contoso",
     "offerTypeId": "microsoft-azure-virtualmachines",
-    "id": "contosovirtualmachine",
+    "id": "contoso-vm",
     "offerTypeVersions": {
         "microsoft-azure-virtualmachines": 87,
         "microsoft-azure-marketplace": 39
@@ -34,10 +34,10 @@
                     ]
                 }
             ],
-            "microsoft-azure-marketplace.smallLogo": "${smallLogoPath}",
-            "microsoft-azure-marketplace.mediumLogo": "${mediumLogoPath}",
-            "microsoft-azure-marketplace.largeLogo": "${largeLogoPath}",
-            "microsoft-azure-marketplace.wideLogo": "${wideLogoPath}",
+            "microsoft-azure-marketplace.smallLogo": "",
+            "microsoft-azure-marketplace.mediumLogo": "",
+            "microsoft-azure-marketplace.largeLogo": "",
+            "microsoft-azure-marketplace.wideLogo": "",
             "microsoft-azure-marketplace.screenshots": [],
             "microsoft-azure-marketplace.videos": [],
             "microsoft-azure-marketplace.leadDestination": "None",

@@ -78,13 +78,13 @@ Before creating a virtual machine offer using the image created in the step abov
 Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/azure-vm-image-test) on more information about validating your virtual machine image.
 
 ### Creating a Virtual Machine Offer
-Before we create the virtual machine offer, we need to update the `publisherId` in the [offer listing config](vmOfferConfig.json). Once updated, we can create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
+Before we create the virtual machine offer, we need to update the `publisherId` in the [offer listing config](listing_config.json). Once updated, we can create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
 
 ```
-./add_virtualMachineOffer.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../marketplace/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../marketplace/virtual-machine/basic-windows-vm/logos
+./add_virtualMachineOffer.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../marketplace/virtual-machine/basic-windows-vm/listing_config.json -logoPath ../marketplace/virtual-machine/basic-windows-vm/logos
 ```
 
-During the execution of this script, dynamic variables will be parsed into the `vmOfferConfig.json` file, and the script exports the updated copy (`parsed_vmOfferConfig.json`). The exported copy will contain the URIs (including the Shared Access Signatures) of the VHD image and the uploaded offer logo images.
+During the execution of this script, dynamic variables will be parsed into the `listing_config.json` file, and the script exports the updated copy (`parsed_listing_config.json`). The exported copy will contain the URIs (including the Shared Access Signatures) of the VHD image and the uploaded offer logo images.
 
 Once the script has completed successfully, a draft virtual machine offer will have been created in [Microsoft Partner Center](https://partner.microsoft.com/en-us/dashboard/marketplace-offers/overview).
 
@@ -93,7 +93,7 @@ Once the draft offer created in the above step has been reviewed and confirmed, 
 
 To start the publishing process:
 ```
-azpc vm publish --name "<Offer Name>" --app-path ../marketplace/virtual-machine/basic-windows-vm --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
+azpc vm publish --name "<Offer Name>" --app-path ../marketplace/virtual-machine/basic-windows-vm --config-json parsed_listing_config.json --notification-emails "<Email Address/es>"
 ```
 
 
@@ -112,7 +112,7 @@ Please refer to the [Hashicorp Packer documentation](https://www.packer.io/docs/
 
 ### Customize the Virtual Machine Offer
 
-The [vmOfferConfig.json](./vmOfferConfig.json) is the listing configuration that defines how the Virtual Machine offer and plans will be set up in Microsoft Partner Center.
+The [listing_config.json](./listing_config.json) is the listing configuration that defines how the Virtual Machine offer and plans will be set up in Microsoft Partner Center.
 Some of the properties available for customization are offer descriptions, categories, terms & conditions, private preview audience. The configuration of multiple plans and their regions, availability, technical configuration and pricing can also be updated.
 Within the listing configuration, there are some dynamic variables embedded to simplify the process for management of the offer logos and the VHD image URI for a plan. These can be changed, however they have been added in to simplify the process and are managed within the virtual machine offer creation script.
 

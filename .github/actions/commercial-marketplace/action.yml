@@ -6,6 +6,9 @@ inputs:
   azureCredentials:
     description: Service prinpical Azure credentials
     required: true
+  storageConnectionString:
+    description: Storage account connection string
+    default: ''
   offerType:
     description: The offer type to run command on
     required: true
@@ -21,6 +24,12 @@ inputs:
   applicationDirectory:
     description: The path to your offer's contents
     default: ''
+  logosPath:
+    description: The path to your offer's logos folder if uploading logos to storage account
+    default: ''
+  logosContainer:
+    description: The storage account container name where logos will be uploaded to
+    default: 'logos'
   workingDirectory:
     description: The working directory
     default: '.'
@@ -47,6 +56,12 @@ runs:
         fi
         echo "RESELLER_CHANNEL=$reseller_config" >> $GITHUB_ENV
       if: ${{ inputs.command == 'create' || inputs.command == 'update' }}
+    - name: Upload logos
+      shell: pwsh
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        ./$GITHUB_ACTION_PATH/upload_logos.ps1 -logosPath ${{ inputs.logosPath }} -storageConnectionString ${{ inputs.storageConnectionString }} -storageContainer ${{ inputs.logosContainer }} -listingConfigFile "${{ inputs.applicationDirectory }}/listing_config.json"
+      if: ${{ inputs.offerType == 'vm' && (inputs.command == 'create' || inputs.command == 'update') }}
     - name: Upsert offer
       id: upsert-offer
       uses: ./.github/actions/azpc
