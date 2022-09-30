@@ -52,3 +52,22 @@ jobs:
           azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
           vhdUri: ${{ steps.build-image.outputs.vhdUri }}
           location: australiaeast
+      - name: Build and create/update offer
+        uses: ./.github/actions/commercial-marketplace
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          offerType: vm
+          command: create
+          applicationName: contoso-vm
+          applicationDirectory: ./marketplace/virtual-machine/basic-windows-vm
+          logosPath: ./marketplace/virtual-machine/basic-windows-vm/logos
+          storageConnectionString: ${{ secrets.AZURE_STORAGECONNECTIONSTRING }}
+        timeout-minutes: 5
+      - name: Delete offer
+        uses: ./.github/actions/commercial-marketplace
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          offerType: vm
+          command: delete
+          applicationName: contoso-vm
+        timeout-minutes: 5

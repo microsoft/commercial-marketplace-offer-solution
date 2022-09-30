@@ -61,7 +61,7 @@ runs:
       working-directory: ${{ inputs.workingDirectory }}
       run: |
         ./$GITHUB_ACTION_PATH/upload_logos.ps1 -logosPath ${{ inputs.logosPath }} -storageConnectionString ${{ inputs.storageConnectionString }} -storageContainer ${{ inputs.logosContainer }} -listingConfigFile "${{ inputs.applicationDirectory }}/listing_config.json"
-      if: ${{ inputs.offerType == 'vm' && (inputs.command == 'create' || inputs.command == 'update') }}
+      if: ${{ inputs.offerType == 'vm' && (inputs.command == 'create' || inputs.command == 'update') && inputs.logosPath != '' }}
     - name: Upsert offer
       id: upsert-offer
       uses: ./.github/actions/azpc
@@ -87,7 +87,7 @@ runs:
         offerType: ${{ inputs.offerType }}
         arguments: '--update --name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }} --config-json listing_config.json --app-path .'
         workingDirectory: ${{ inputs.applicationDirectory }}
-      if: ${{ (inputs.command == 'create' && inputs.planName != '') || inputs.command == 'create-plan' }}
+      if: ${{ inputs.planName != '' && (inputs.command == 'create' || inputs.command == 'create-plan') }}
     - name: Update plan
       uses: ./.github/actions/azpc
       with:
@@ -95,7 +95,7 @@ runs:
         offerType: ${{ inputs.offerType }}
         arguments: '--name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }} --config-json listing_config.json --app-path .'
         workingDirectory: ${{ inputs.applicationDirectory }}
-      if: ${{ (inputs.command == 'update' && inputs.planName != '') || inputs.command == 'update-plan' }}
+      if: ${{ inputs.planName != '' && (inputs.command == 'update' || inputs.command == 'update-plan') }}
     - name: Delete offer
       id: delete-offer
       uses: ./.github/actions/azpc
