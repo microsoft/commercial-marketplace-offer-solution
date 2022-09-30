@@ -38,4 +38,5 @@ runs:
       run: |
         packer -machine-readable build -color=false ${{ inputs.target }} > packer.log
         uri=$(echo $(tail -1 packer.log) | grep -o "\(OSDiskUri:\)\\s\+\(.*\)" | cut -b 12-)
+        echo $(tail -1 packer.log) | grep -o "\(OSDiskUri:\)\\s\+\(.*\)"
         if [[ -z $uri ]]; then exit 1; else echo "::set-output name=vhdUri::$(echo $uri)"; fi

@@ -24,30 +24,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      # - name: Set Packer Variables
-      #   uses: microsoft/variable-substitution@v1
-      #   with:
-      #     files: marketplace/virtual-machine/basic-windows-vm/variables.pkr.json
-      #   env:
-      #     variable.artifact_storage_account.default: azmpstor
-      #     variable.image_vhd_name.default: basicwinvm_${{ github.run_number }}
-      #     variable.region.default: australiaeast
-      #     variable.resource_group_name.default: azmp-rg
-      #     variable.temp_resource_group_name.default: basicwinvm-${{ github.run_number }}-rg
-      # - name: Build Image
-      #   id: build-image
-      #   uses: ./.github/actions/packer-build
-      #   with:
-      #     azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
-      #     target: .
-      #     workingDirectory: marketplace/virtual-machine/basic-windows-vm
+      - name: Set Packer Variables
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: marketplace/virtual-machine/basic-windows-vm/variables.pkr.json
+        env:
+          variable.artifact_storage_account.default: azmpstor
+          variable.image_vhd_name.default: basicwinvm_${{ github.run_number }}
+          variable.region.default: australiaeast
+          variable.resource_group_name.default: azmp-rg
+          variable.temp_resource_group_name.default: basicwinvm-${{ github.run_number }}-rg
+      - name: Build Image
+        id: build-image
+        uses: ./.github/actions/packer-build
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          target: .
+          workingDirectory: marketplace/virtual-machine/basic-windows-vm
+      - name: Check VHD URI
+        shell: bash
+        run: |
+          echo "${{ steps.build-image.outputs.vhdUri }}"
       - name: Validate Image
         id: validate-image
         uses: ./.github/actions/validate-image
         with:
           azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
-          vhdUri: "https://azmpstor.blob.core.windows.net/system/Microsoft.Compute/Images/vhds/basicwinvm_15-osDisk.f8a204a1-9604-41d0-9582-d8a31a52b5e2.vhd"
-      # - name: Check logs
-      #   shell: bash
-      #   run: |
-      #     echo ${{ steps.build-image.outputs.vhdUri }}
+          vhdUri: ${{ steps.build-image.outputs.vhdUri }}
+          location: australiaeast
