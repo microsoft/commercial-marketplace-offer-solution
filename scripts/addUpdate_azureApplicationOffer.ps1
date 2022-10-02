@@ -2,6 +2,8 @@
 # Licensed under the MIT License.
 
 Param (
+  [Parameter(Mandatory =$True, HelpMessage = "Offer Type: st or ma")]
+  [String] $offerType,
   [Parameter(Mandatory = $True, HelpMessage = "Path to solution assets folder")]
   [String] $assetsFolder,
   [Parameter(Mandatory = $False, HelpMessage = "Path to the config file")]
@@ -32,6 +34,11 @@ function Get-OfferGuid {
 
    # Create command successfully returned the offer object so get the GUID from it.
   return $result.id
+}
+
+if($offerType -ne "st" -and $offerType -ne "ma") {
+  Write-Error "Invalid offer type entered. Please specify the offer type as st or ma."
+  Exit 1
 }
 
 if (Test-Path $assetsFolder) {
@@ -65,11 +72,6 @@ if ("" -ne $manifestFile)
 
 Set-Location $assetsFolder
 
-# Generate config.yml file
-$configYmlPath = "config.yml"
-Write-Output "Generating Partner Center CLI config file: $configYmlPath"
-python $scriptFolder/helpers/generatePCYaml.py $configFilePath $configYmlPath
-
 # Read manifest.yml
 $manifestJsonPath = "convertedManifest.json"
 python $scriptFolder/helpers/convertYamlToJson.py $manifestYmlPath $manifestJsonPath
@@ -78,10 +80,19 @@ $offerName = $manifest.name
 $planName = $manifest.plan_name
 Remove-Item $manifestJsonPath -Force
 
+# Get Reseller Configuration
+Write-Output "Setting reseller configuration for offer $offerName..."
+$listingConfig = Get-Content $manifest.json_listing_config -Raw | ConvertFrom-Json
+$resellerConfig= $listingConfig.resell.resellerChannelState
+if($resellerConfig -eq $null){
+  $resellerConfig = "Disabled"
+}
+$env:RESELLER_CHANNEL = $resellerConfig
+
 # Create offer and pipe results to a file. The CLI does not write to the correct streams.
 Write-Output "Creating offer $offerName..."
 $createResultFile = "create_result.json"
-&{azpc st create --update --name $offerName --config-json $manifest.json_listing_config --app-path $manifest.app_path} *> $createResultFile
+&{azpc $offerType create --update --name $offerName --config-json $manifest.json_listing_config --app-path $manifest.app_path} *> $createResultFile
 
 # Parse results from offer creation command
 try
@@ -112,12 +123,11 @@ Remove-Item -Path $releaseFolder -Recurse -Force
 # Create plan
 Set-Location $assetsFolder
 Write-Output "Creating plan $planName for offer $offerName..."
-&{azpc st plan create --update --name $offerName --plan_name $planName --config-json $manifest.json_listing_config --app-path $manifest.app_path} *> $createResultFile
+&{azpc $offerType plan create --update --name $offerName --plan-name $planName --config-json $manifest.json_listing_config --app-path $manifest.app_path} *> $createResultFile
 Write-Output "Plan $planName for offer $offerName created or updated."
 
 # Clean up
 Remove-Item $createResultFile
-Remove-Item $configYmlPath
 Remove-Item "marketplacePackage.zip"
 
 Set-Location $scriptFolder

@@ -1,6 +1,6 @@
-# Sample - Solution Template with Custom Script Extension
+# Sample - Azure Application with Custom Script Extension
 
-This sample demonstrates how to build a solution template Azure Application offer. This sample deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script (`WriteText.ps1`) after the VM has been provisioned.
+This sample demonstrates how to build a solution template or managed application Azure Application offer. This sample deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script (`WriteText.ps1`) after the VM has been provisioned.
 
 Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/plan-azure-app-solution-template) for more information about the solution template offer type.
 
@@ -29,7 +29,7 @@ Create a `config.json` from from the template file [config.json.tmpl](../../../s
 Deploy the solution. Replace "MyResourceGroup" with your own resource group name. If you have a parameters file, you can use the `-parametersFile` parameter to specify the file.
 ```
 ./package.ps1 -assetsFolder ../marketplace/application/base-image-vm/app-contents -releaseFolder release_01
-./devDeploy.ps1 -resourceGroup MyResourceGroup -assetsFolder ./release_01/assets -parametersFile myparameters.json
+./devDeploy.ps1 -resourceGroup MyResourceGroup -location westus -assetsFolder ./release_01/assets -parametersFile myparameters.json
 ```
 
 Cleanup the deployment. Replace "MyResourceGroup" with your own resource group name.
@@ -37,27 +37,10 @@ Cleanup the deployment. Replace "MyResourceGroup" with your own resource group n
 az group create --name MyResourceGroup
 ```
 
-## Create and publish the Solution Template offer using Azure DevOps
-A simpler approach to deploying your samples is to use the pre-built Azure DevOps pipeline files. These pipelines will manage the solution template offer creation, as well as publishing.
-
-1. Fork the [repository](https://dev.azure.com/AZGlobal/Azure%20Global%20CAT%20Engineering/_git/AGCI-Marketplace-Scripts).
-2. [Create a Service Principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) so that the pipeline can have access to your Azure and Partner Center resources.
-3. [Create an Azure Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) to store your Azure and Partner Center secrets. Ensure that your Service Principal has access to the Key Vault.
-4. Create a variable group in Azure DevOps for your secrets. Be sure to enable "Link secrets from an Azure key vault as variables".
-5. [Create the pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=java%2Ctfs-2018-2%2Cbrowser) in Azure DevOps:
-    * Create a new pipeline to create the solution template offer, selecting the existing YAML pipeline file [solutiontemplate.pr.yml](solutiontemplate.pr.yml).
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-    * Create a new pipeline to publish your solution template offer, selecting the existing YAML pipeline file [solutiontemplate.publish.yml](solutiontemplate.publish.yml).
-        * Replace the variables group value with your variable group name.
-        * Save your changes.
-6. [Create a branch policy](https://docs.microsoft.com/en-us/azure/devops/pipelines/release/deploy-pull-request-builds?view=azure-devops#set-up-branch-policy-for-azure-repos) on the branch of your forked repository so that the solution template offer creation pipeline will be triggered when a pull request is created, and the publish pipeline is triggered on merge into `main`.
-6. Make a change to the solution template sample files, commit the change, and raise a pull request.
-7. Merge the pull request into the `main` branch.
 
 ## Modifying the Sample For Your Use Case
 
-You can use this sample as a base for your own solution template offer. Modify the `createUiDefinition.json` and Bicep templates (`mainTemplate.bicep`) to suit your needs.
+You can use this sample as a base for your own solution template or managed application offer. Modify the `createUiDefinition.json` and Bicep templates (`mainTemplate.bicep`) to suit your needs.
 
 ### Customize the Portal User Interface
 
@@ -79,7 +62,7 @@ This sample runs a simple PowerShell script in the custom script extension. Repl
 
 ### Packaging
 
-Once you have finished modifying the files, you can package the solution using the [packaging script](../../../scripts/package.ps1) provided in the `scripts` folder. This will generate a deployment package (`marketplacePackage.zip`) that contains all the files needed for your solution template offer.
+Once you have finished modifying the files, you can package the solution using the [packaging script](../../../scripts/package.ps1) provided in the `scripts` folder. This will generate a deployment package (`marketplacePackage.zip`) that contains all the files needed for your offer.
 
 ```
 ./package.ps1 -assetsFolder ../marketplace/application/base-image-vm/app-contents -releaseFolder my_st_offer
@@ -91,15 +74,24 @@ If you have already created an offer in the Azure Marketplace, you can include t
 ./package.ps1 -assetsFolder ../marketplace/application/base-image-vm/app-contents -releaseFolder my_st_offer -offerId ec484fb9-31a0-4332-b6eb-27babe9c9233
 ```
 
-Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/plan-azure-app-solution-template#deployment-package) for more information on how to package your solution template offer.
+Please refer to the Microsoft documentation for more information on how to package your [solution template](https://docs.microsoft.com/en-us/azure/marketplace/plan-azure-app-solution-template#deployment-package) and [managed application](https://learn.microsoft.com/en-us/azure/marketplace/plan-azure-app-managed-app#deployment-package) offers.
 
-### Create/Update the Azure Application Solution Template Offer
+### Create/Update the Azure Application (Solution Template or Managed Application) Offer
 
-A [script](../../../scripts/solutionTemplateOfferAddUpdate.ps1) is provided in the `scripts` folder of this repository to create the Azure Application Solution Template offer. The script will package the solution, create an offer if it does not already exist, create a plan if it does not already exist, and upload the solution package and offer assets (logos). You can also use this script to update the offer or plan.
+A [script](../../../scripts/addUpdate_azureApplicationOffer.ps1) is provided in the `scripts` folder of this repository to create the Azure Application (Solution Template or Managed Application) offer.
+
+The sample [offer listing config](./listing_config.json) contains 2 plan options:
+- Solution Template (`base-image-vm`)
+- Managed Application (`base-image-vm-app`)
+
+The offer type that is created refers to the plan set in the [manifest file](./manifest.yml).
+
+The script will package the solution, create an offer if it does not already exist, create a plan if it does not already exist, and upload the solution package and offer assets (logos). You can also use this script to update the offer or plan.
 
 ```
-./solutionTemplateOfferAddUpdate.ps1 -assetsFolder ../marketplace/application/base-image-vm
+./addUpdate_azureApplicationOffer.ps1 -assetsFolder ../marketplace/application/base-image-vm -manifestFile ../marketplace/application/base-image-vm/manifest.yml -offerType "<offer type>"
 ```
+Where "<offertype>" has the option of st or ma, for solution template and managed application, respectively.
 
 Before running the script, you will need to set the following variables in the [configuration file](../../../scripts/config.json):
 
@@ -113,12 +105,12 @@ Before running the script, you will need to set the following variables in the [
 
 Please refer to the [Microsoft Azure Service Principal documentation](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) on more information on how to create a Service Principal.
 
-### Publishing the Azure Application Solution Template Offer
+### Publishing the Azure Application Offer
 Once the draft offer created in the above step has been reviewed and confirmed, the offer can be submitted for publishing.
 
 To start the publishing process:
 ```
-./solutionTemplateOfferPublish.ps1 -manifestFile ../marketplace/application/base-image-vm/manifest.yml
+azpc app publish --name "<offer name>"
 ```
 
 ### Automating with GitHub Workflows
