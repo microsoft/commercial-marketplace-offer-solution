@@ -1,12 +1,25 @@
-# Commercial Marketplace Samples and Scripts
-This repository contains a set of samples and scripts that can be used a starting point for customers to build their own Azure Marketplace offerings.
+# Commercial Marketplace Offer Templates
+This repository provides an easy way to get started on publishing an offer to the Microsoft [Commercial Marketplace](https://learn.microsoft.com/en-us/azure/marketplace/overview).
 
-## Prerequisites
-The samples and scripts in this repository uses the following tools:
+Included in this repository are:
+- Azure Application and Azure Virtual Machine offer type templates
+- GitHub actions and starter workflows to help you get started with automation
+- Scripts to help you run common tasks, such as creating a VM image
+
+These templates are designed to be a starting point for your offer and are not intended to be a complete solution. You are free to modify the templates to meet your needs.
+
+## Getting Started
+
+### Step 1: Create a repository
+The easiest way to get started is to use the [GitHub Template Repository](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) feature to create a new repository from this template. You can also fork or clone this repository and modify the files to meet your needs.
+
+### Step 2: Install Tools
+
+The templates and scripts in this repository use the following tools:
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 - [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-cli)
 - [Packer](https://www.packer.io/downloads)
-- Azure Partner Center CLI
+- [Azure Partner Center CLI](https://github.com/microsoft/az-partner-center-cli)
 - [Pester](https://pester.dev/docs/introduction/installation)
 - [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell)
 - [Python 3.7+](https://www.python.org/downloads/)
@@ -17,42 +30,21 @@ Please refer to the setup scripts for your operating system for easy installatio
 - [macOS](setup/macos.sh) - installs and uses [Homebrew](https://brew.sh/) to install tools.
 - [Windows](setup/windows.ps1) - installs and uses [Chocolatey](https://chocolatey.org/) (default) to install tools. To install without Chocolatey, run `./windows.ps1 -useChocolatey $false`.
 
-### Azure Partner Center CLI Installation
+### Step 3: Modify Offer Template Files
 
-The Azure Partner Center CLI requires Python 3.7+ to be installed. Please [download](https://www.python.org/downloads/) the appropriate version of Python and install it on your system. Once Python is installed, create a virtual environment ([venv](https://docs.python.org/3/library/venv.html), [Anaconda](https://www.anaconda.com/)) and install the following packages:
-
-```
-pip install --upgrade pip
-pip install az-partner-center-cli
-```
-
-Here's an example using `venv`:
-
-```
-python3 -m venv my_env
-source my_env/bin/activate
-
-pip install --upgrade pip
-pip install az-partner-center-cli
-
-# to deactivate
-deactivate
-```
-
-## Samples
-Use the following samples to build your own Azure Marketplace offerings. Each sample includes a README file that contains instructions on how to build the sample and modify it for your use case.
+Use the following offer templates to build your own Commercial Marketplace offerings. Each offer template includes a README file that contains instructions on how to build the offer and modify it for your use case.
 
 ### [Solution Template with Custom Script Extension](marketplace/application/base-image-vm/README.md)
 
-This sample demonstrates how to build a solution template Azure Application offer. This sample deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script after the VM has been provisioned.
+This offer template demonstrates how to build a solution template Azure Application offer. This offer deploys a Windows Server 2019 VM and runs a custom script extension that writes content to a file. The custom script extension runs a PowerShell script after the VM has been provisioned.
 
 ### [Windows Server 2019 Virtual Machine with Added Tools](marketplace/virtual-machine/basic-windows-vm/README.md)
 
-This sample demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer.
+This offer template demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer.
 
-## Automation
+### Step 4: Create GitHub Workflows
 
-GitHub [actions](.github/actions/) and [starter workflows](.github/workflow-templates/) are provided to automate the build, test and publish process for Azure Marketplace offers. To use an action, refer to it as follows in your workflow:
+GitHub [actions](.github/actions/) and [starter workflows](.github/workflow-templates/) are provided to automate the build, test and publish process for Commercial Marketplace offers. To use an action, refer to it as follows in your workflow:
 ```
 microsoft/commercial-marketplace-offer-solution/.github/actions/[ACTION DIRECTORY]
 ```
@@ -64,8 +56,8 @@ steps:
 ```
 Refer to the GitHub documentation for more information on using [starter workflows](https://docs.github.com/en/actions/using-workflows/using-starter-workflows).
 
-### Future Work
-This repository is still under development. We are working to add more scripts for testing and automation.
+## Future Work
+This repository is still under development. We are working to add more offer templates and scripts for testing and automation.
 
 ## Contribute
 Contributions to this repository are welcome. Here's how you can contribute:
