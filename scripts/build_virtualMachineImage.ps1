@@ -2,30 +2,27 @@
 # Licensed under the MIT License.
 
 ####################################################################################################
-# This script allows you to create a Windows Server 2019 virtual machine image.                    #
-# A packer script builds out the custom VM image and stores the VHD image in the provided storage  #
-# account. A managed image is then created in the provided storage account, ready for use.         #
+# This script builds out the custom VM image and stores the VHD image in the specified storage     #
+# account. The VHD SAS URI is then generated and returned.                                         #
 ####################################################################################################
 
 Param (
-    [Parameter(Mandatory = $True, HelpMessage = "Path to solution assets folder")]
-    [String] $assetsFolder,
-    [Parameter(HelpMessage = "Is this script running from an Azure Devops Pipeline? ('False' by default)")]
-    [Boolean] $isADOPipeline = $False
+    [Parameter(Mandatory = $True, HelpMessage = "Path to Packer template directory")]
+    [String] $templateDirectory
 )
 
-# Validate input parameter
-if (-not(Test-Path $assetsFolder)) {
-    Write-Error "Please provide a valid assets folder path."
+# Validate Packer template folder exists
+if (-not(Test-Path $templateDirectory)) {
+    Write-Error "Please provide a valid Packer template directory path."
     Exit 1
 }
 
-$scriptFolder = Get-Item .
+$workingDirectory = Get-Item .
 
-Set-Location $assetsFolder
+Set-Location $templateDirectory
 
 try {
-    Write-Output 'Creating VHD using packer...'
+    Write-Output "Creating VHD using packer..."
     $output = packer -machine-readable build .
 
     # Get the VHD URI from the packer script output
@@ -33,32 +30,37 @@ try {
 
     if ($uri)
     {
-        Write-Output "VHD build complete: $uri"
+        Write-Output "VHD build complete. VHD URI: $uri"
+        Write-Output "Generating SAS URL for VHD..."
+        $storageAccountName = $uri.Split('//')[1].Split('.')[0]
+        $connectionString = (az storage account show-connection-string --name $storageAccountName -o json | ConvertFrom-Json).connectionString
 
-        # If run in Azure Devops Pipeline, set the output variable
-        if ($isADOPipeline) {
-            Write-Output("##vso[task.setvariable variable=vhdUri;isOutput=true]$uri")
+        $start = (((Get-Date).ToUniversalTime()).addDays(-1)).ToString("yyyy-MM-ddTHH:mm:ssZ")
+        $end = (((Get-Date).ToUniversalTime()).addDays(60)).ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+        $sas = az storage container generate-sas --connection-string $connectionString --name "system" --permissions rl --start $start --expiry $end -o tsv
+        $sasUri = $uri + "?" + $sas
+
+        $vhdObject = New-Object PSObject -Property @{
+            Uri                 = $uri
+            SasUri              = $sasUri
+            StorageAccountName  = $storageAccountName
         }
 
-        return $uri
-
-    } else
+        return $vhdObject
+    }
+    else
     {
         throw [System.Exception]
     }
-
-} catch
+}
+catch
 {
-    if ($isADOPipeline) {
-        Write-Error "Build failed or produced no artifacts. See details below: $output"
-    } else {
-        $logFilename = "buildError_" + ((Get-Date).ToUniversalTime()).ToString("yyMMddTHHmmss") + '.log'
-        Out-File -InputObject $output -Path $logFilename
-        Write-Error "Build failed or produced no artifacts. See log file ($logFilename) for details."
-    }
-
+    $logFilename = "buildError_" + ((Get-Date).ToUniversalTime()).ToString("yyMMddTHHmmss") + '.log'
+    Out-File -InputObject $output -Path $logFilename
+    Write-Error "Build failed or produced no artifacts. See log file ($logFilename) for details."
 }
 finally
 {
-    Set-Location $scriptFolder
+    Set-Location $workingDirectory
 }
