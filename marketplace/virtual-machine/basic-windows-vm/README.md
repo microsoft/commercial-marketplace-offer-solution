@@ -1,105 +1,21 @@
-# Sample - Virtual Machine Offer using Windows Server 2019 Virtual Machine Image with Added Tools
+# Virtual Machine Offer using Windows Server 2019 Virtual Machine Image with Added Tools
 
-This sample demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer using the Azure Partner Center CLI.
+This offer template demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer using the Azure Partner Center CLI.
 
-## Get Started
+Please refer to the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/marketplace/marketplace-virtual-machines) for more information about the Virtual Machine offer type.
+
+## Step 1: Install Tools
 
 Follow the set-up instructions [here](../../../README.md) to install all of the required dependencies.
 
-Sign in using the Azure CLI and if you don't already have an existing storage account, you can create one. Replace "MyResourceGroup" with your own resource group name.
+Sign in to your Azure account:
 ```
 az login
-az group create --name MyResourceGroup --location westus
-az storage account create -n mystorageacct -g MyResourceGroup -l westus --sku Standard_LRS
 ```
 
-## Deploy the Sample Locally
+## Step 2: Modify the Template For Your Use Case
 
-In the [scripts](../../../scripts) folder of this repository, you will find the PowerShell scripts you can use to deploy the VM offer sample.
-
-### Create Configuration Files
-There are a couple of configuration files that are required for the following steps.
-1. Copy [`config.json.tmpl`](../../../scripts/config.json.tmpl) and create new file `config.json`.
-2. Complete `config.json`.
-    * **tenantId**: Who will publish the offer
-    * **subscriptionId**: Who will be the preview audience
-    * **clientId** and **clientSecret**: Service principal used for calling partner API
-    * **managedAppPrincipalId**: Service principal will have access to managed resource group
-    * **publisherId**: The Partner Center publishing account ID
-    * **location**: What region will the Azure resources be deployed to
-    * **adminPassword**: The admin password for the virtual machine configuration
-    * **storageAccountResourceGroup**: The resource group of the storage account created above
-    * **storageAccountName**: The name of the storage account created above
-    * **storageAccountKey**: One of the access keys of the storage account created above
-
-
-#### config.json
-```json
-{
-  "aad": {
-    "tenantId": "<Azure Tenant ID>",
-    "clientId": "<Service Principal ID>",
-    "clientSecret": "<Service Principal Secret>"
-  },
-  "partnerCenter": {
-    "managedAppPrincipalId": "<Service Principal ID>",
-    "publisherId": "<Partner Center Publisher ID>"
-  },
-  "azure": {
-    "subscriptionId": "<Azure Subscription>",
-    "location": "<Azure Region>",
-    "adminPassword": "<Admin Password>",
-    "storageAccountResourceGroup": "<Azure Storage Account Resource Group>",
-    "storageAccountName": "<Azure Storage Name>",
-    "storageAccountKey": "<Azure Storage Access Key>"
-  }
-}
-```
-
-Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) on more information on how to create a Service Principal.
-
-### Creating the Virtual Machine Image
-Update the [variables.pkr.json](variables.pkr.json) to match your newly created storage account and resource group. You can also modify any of the other variables in the file to fit your need.
-
-Build the image.
-```
-./build_virtualMachineImage.ps1 -assetsFolder ../marketplace/virtual-machine/basic-windows-vm
-```
-
-Once the script has completed successfully, it will output the URI the VHD created in the storage account. Take a copy of the URI for the following step.
-
-### Validating the Virtual Machine Image
-Before creating a virtual machine offer using the image created in the step above, we need to run it through a validation process to ensure that the image meets all of the Azure Marketplace publishing requirements. The VHD URI returned in the previous step will be required.
-
-```
-./validate_virtualMachineImage.ps1 -vhdUri "<VHD URI>" -configJsonFile config.json
-```
-
-Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/azure-vm-image-test) on more information about validating your virtual machine image.
-
-### Creating a Virtual Machine Offer
-Before we create the virtual machine offer, we need to update the `publisherId` in the [offer listing config](vmOfferConfig.json). Once updated, we can create the virtual machine offer, using the VHD URI returned from the **Creating the Virtual Machine Image** step.
-
-```
-./add_virtualMachineOffer.ps1 -vhdUri "<VHD URI>" -configFile config.json -vmOfferConfig ../marketplace/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../marketplace/virtual-machine/basic-windows-vm/logos
-```
-
-During the execution of this script, dynamic variables will be parsed into the `vmOfferConfig.json` file, and the script exports the updated copy (`parsed_vmOfferConfig.json`). The exported copy will contain the URIs (including the Shared Access Signatures) of the VHD image and the uploaded offer logo images.
-
-Once the script has completed successfully, a draft virtual machine offer will have been created in [Microsoft Partner Center](https://partner.microsoft.com/en-us/dashboard/marketplace-offers/overview).
-
-### Publishing a Virtual Machine Offer
-Once the draft offer created in the above step has been reviewed and confirmed, the offer can be submitted for publishing.
-
-To start the publishing process:
-```
-azpc vm publish --name "<Offer Name>" --app-path ../marketplace/virtual-machine/basic-windows-vm --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
-```
-
-
-## Modifying the Sample For Your Use Case
-
-You can use this sample as a base for your own VM offer. Modify the noted files below to suit your needs.
+You can use this template as a base for your own virtual machine offer. Modify the noted files below to suit your needs.
 
 ### Customize the Packer templates
 
@@ -126,18 +42,97 @@ If changes are made to the build Packer template (`build.BasicWindowsVMImage.pkr
 
 Please refer to the [Pester documentation](https://pester.dev/docs/quick-start) for more information on how to write Pester tests.
 
-## Manually Verifying the Image
 
-During the build of the image, a suite of tests are run to ensure that the VM the image is built from, is configured correctly.
+## Step 3: Create the virtual machine image
 
-To manually verify the image, create a VM from the managed image.
+In the [scripts](../../../scripts) folder of this repository, you will find the PowerShell scripts you can use to create a virtual machine image.
+
+1. If you don't already have an existing storage account, you can create one. Replace "MyResourceGroup" with your own resource group name.
+```
+az group create --name MyResourceGroup --location westus
+az storage account create -n mystorageacct -g MyResourceGroup -l westus --sku Standard_LRS
+```
+
+2. Update the [variables.pkr.json](variables.pkr.json) to match your newly created storage account and resource group. You can also modify any of the other variables in the file to fit your need.
+
+3. Build the image. Once the script has completed successfully, it will output the URI the VHD created in the storage account. Take a copy of the URI for the following steps.
+```
+./build_virtualMachineImage.ps1 -assetsFolder ../marketplace/virtual-machine/basic-windows-vm
+```
+
+## Step 4: Test the virtual machine image
+
+1. Create a temporary resource group. Replace "MyVmResourceGroup" with your own resource group name.
 ```
 az group create --name MyVmResourceGroup --location westus
-az image create -g MyVmResourceGroup -n MyImage --os-type Windows --storage-sku Standard_LRS --source <VHD URI>
+```
+
+2. Create an image using the VHD URI. Replace "MyVmResourceGroup" with your own resource group name. Replace "VHD URI" with the URI saved from the previous steps.
+```
+az image create -g MyVmResourceGroup -n MyImage --os-type Windows --storage-sku Standard_LRS --source "VHD URI>"
+```
+
+3. Create a virtual machine from the image created. Replace "MyVmResourceGroup" with your own resource group name.
+```
 az vm create -g MyVmResourceGroup -n MyVm --image MyImage --size Standard_D2_v3 --public-ip-sku Standard --admin-username azureuser --admin-password 'YOUR_PASSWORD' --nsg MyNSG --nsg-rule RDP
 ```
 
-Clean up the resources by deleting the VM resource group:
+4. Manually verify the virtual machine is configured as expected.
+
+5. Clean up the resources. Replace "MyVmResourceGroup" with your own resource group name.
 ```
 az group delete -n MyVmResourceGroup
+```
+
+## Step 5: Prepare the Offer
+
+Before creating a virtual machine offer using the custom image created above, it must be validated to ensure the image meets all of the Azure Marketplace publishing requirements.
+
+Replace "VHD URI" with the URI saved from the previous steps.
+```
+./validate_virtualMachineImage.ps1 -vhdUri "VHD URI" -configJsonFile config.json
+```
+
+Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/azure/marketplace/azure-vm-image-test) on more information about validating your virtual machine image.
+
+
+### Create a Virtual Machine Offer
+
+A [script](../../../scripts/add_virtualMachineOffer.ps1) is provided in the `scripts` folder of this repository to create the Virtual Machine offer.
+
+The script will create an offer if it does not already exist, create a plan if it does not already exist (using the supplied VHD URI) and upload the offer assets (logos).
+
+During the execution of the script, dynamic variables are parsed into the [offer listing config](vmOfferConfig.json), and the script exports an updated copy (`parsed_vmOfferConfig.json`). The exported copy will contain the URIs (including the Shared Access Signatures) of the VHD image and the uploaded offer logos.
+
+Replace "VHD URI" with the URI saved from the previous steps.
+
+```
+./add_virtualMachineOffer.ps1 -vhdUri "VHD URI" -configFile config.json -vmOfferConfig ../marketplace/virtual-machine/basic-windows-vm/vmOfferConfig.json -logoPath ../marketplace/virtual-machine/basic-windows-vm/logos
+```
+
+Before running the script, you will need to set the following variables in the [configuration file](../../../scripts/config.json) and [offer listing config](vmOfferConfig.json):
+
+1. Copy [`config.json.tmpl`](../../../scripts/config.json.tmpl) and create new file `config.json`.
+2. Complete `config.json`.
+    * **tenantId**: Who will publish the offer
+    * **subscriptionId**: Who will be the preview audience
+    * **clientId** and **clientSecret**: Service principal used for calling partner API
+    * **managedAppPrincipalId**: Service principal will have access to managed resource group
+    * **publisherId**: The Partner Center publishing account ID
+    * **location**: What region will the Azure resources be deployed to
+    * **adminPassword**: The admin password for the virtual machine configuration
+    * **storageAccountResourceGroup**: The resource group of the storage account created above
+    * **storageAccountName**: The name of the storage account created above
+    * **storageAccountKey**: One of the access keys of the storage account created above
+3. Update the publisher (`publisherId`) in [`vmOfferConfig.json`](vmOfferConfig.json).
+
+Please refer to the [Microsoft documentation](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli) on more information on how to create a Service Principal.
+
+
+### Publishing a Virtual Machine Offer
+Once the draft offer created in the above step has been reviewed and confirmed, the offer can be submitted for publishing.
+
+To start the publishing process:
+```
+azpc vm publish --name "<Offer Name>" --app-path ../marketplace/virtual-machine/basic-windows-vm --config-json parsed_vmOfferConfig.json --notification-emails "<Email Address/es>"
 ```
