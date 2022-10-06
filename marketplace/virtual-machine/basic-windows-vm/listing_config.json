@@ -1,0 +1,104 @@
+{
+  "publisherId": "contoso",
+  "offerTypeId": "microsoft-azure-virtualmachines",
+  "id": "contoso-vm",
+  "offerTypeVersions": {
+    "microsoft-azure-virtualmachines": 87,
+    "microsoft-azure-marketplace": 39
+  },
+  "definition": {
+    "displayText": "Contoso Virtual Machine Offer",
+    "offer": {
+      "microsoft-azure-marketplace.title": "Contoso App",
+      "microsoft-azure-marketplace.summary": "Contoso App makes dev ops a breeze",
+      "microsoft-azure-marketplace.longSummary": "Contoso App makes dev ops a breeze",
+      "microsoft-azure-marketplace.description": "Contoso App makes dev ops a breeze",
+      "microsoft-azure-marketplace.offerMarketingUrlIdentifier": "contosoapp",
+      "microsoft-azure-marketplace.allowedSubscriptions": [
+        "59160c40-2e25-4dcf-a2fd-6514cb08bf08"
+      ],
+      "microsoft-azure-marketplace.usefulLinks": [
+        {
+          "linkTitle": "Contoso App for Azure",
+          "linkUrl": "https://azuremarketplace.microsoft.com"
+        }
+      ],
+      "microsoft-azure-marketplace.categoryMap": [
+        {
+          "categoryL1": "analytics-amp",
+          "categoryL2-analytics-amp": [
+            "data-analytics"
+          ]
+        },
+        {
+          "categoryL1": "ai-plus-machine-learning",
+          "categoryL2-ai-plus-machine-learning": [
+            "bot-services",
+            "cognitive-services"
+          ]
+        }
+      ],
+      "microsoft-azure-marketplace.smallLogo": "${smallLogoPath}",
+      "microsoft-azure-marketplace.mediumLogo": "${mediumLogoPath}",
+      "microsoft-azure-marketplace.largeLogo": "${largeLogoPath}",
+      "microsoft-azure-marketplace.wideLogo": "${wideLogoPath}",
+      "microsoft-azure-marketplace.screenshots": [],
+      "microsoft-azure-marketplace.videos": [],
+      "microsoft-azure-marketplace.leadDestination": "None",
+      "microsoft-azure-marketplace.privacyURL": "https://azuremarketplace.microsoft.com",
+      "microsoft-azure-marketplace.termsOfUse": "Terms of use",
+      "microsoft-azure-marketplace.engineeringContactName": "Jon Doe",
+      "microsoft-azure-marketplace.engineeringContactEmail": "jondoe@outlook.com",
+      "microsoft-azure-marketplace.engineeringContactPhone": "555-555-5555",
+      "microsoft-azure-marketplace.supportContactName": "Jon Doe",
+      "microsoft-azure-marketplace.supportContactEmail": "jondoe@outlook.com",
+      "microsoft-azure-marketplace.supportContactPhone": "555-555-5555",
+      "microsoft-azure-marketplace.publicAzureSupportUrl": "",
+      "microsoft-azure-marketplace.fairfaxSupportUrl": "",
+      "microsoft-azure-marketplace.cspOfferOptIn": false
+    },
+    "plans": [
+      {
+        "planId": "contososkuidentifier",
+        "microsoft-azure-virtualmachines.skuTitle": "Contoso App",
+        "microsoft-azure-virtualmachines.skuSummary": "Contoso App makes dev ops a breeze.",
+        "microsoft-azure-virtualmachines.skuDescription": "This is a description for the Contoso App that makes dev ops a breeze.",
+        "microsoft-azure-virtualmachines.hideSKUForSolutionTemplate": false,
+        "microsoft-azure-virtualmachines.cloudAvailability": [
+          "PublicAzure"
+        ],
+        "virtualMachinePricingV2": {
+          "isByol": false,
+          "coreMultiplier": {
+            "currency": "USD",
+            "single": 0
+          },
+          "freeTrialDurationInMonths": 0
+        },
+        "microsoft-azure-virtualmachines.operatingSystemFamily": "Windows",
+        "microsoft-azure-virtualmachines.windowsOSType": "Other",
+        "microsoft-azure-virtualmachines.operationSystem": "Contoso App",
+        "microsoft-azure-virtualmachines.recommendedVMSizes": [
+          "a0-basic",
+          "a0-standard",
+          "a1-basic",
+          "a1-standard",
+          "a2-basic",
+          "a2-standard"
+        ],
+        "microsoft-azure-virtualmachines.openPorts": [],
+        "microsoft-azure-virtualmachines.vmImages": {
+          "1.0.0": {
+            "osVhdUrl": "${vhdSasUri}",
+            "lunVhdDetails": []
+          }
+        },
+        "regions": [
+          "AZ"
+        ]
+      }
+    ]
+  },
+  "eTag": "W/\"datetime'2017-06-07T06%3A15%3A40.4771399Z'\"",
+  "version": 5
+}

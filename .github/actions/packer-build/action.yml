@@ -1,0 +1,41 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Packer Build
+description: Build image using Packer
+inputs:
+  azureCredentials:
+    description: Service prinpical Azure credentials
+    required: true
+  target:
+    description: The file or directory to target
+    default: '.'
+  workingDirectory:
+    description: The working directory
+    default: '.'
+outputs:
+  vhdUri:
+    description: The image VHD URI
+    value: ${{ steps.run-packer.outputs.vhdUri }}
+runs:
+  using: composite
+  steps:
+    - name: Install Packer
+      id: install-packer
+      shell: bash
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+        sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        sudo apt-get update && sudo apt-get install packer
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azureCredentials }}
+    - name: Run Packer
+      id: run-packer
+      shell: pwsh
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        $output = packer -machine-readable build -color=false ${{ inputs.target }}
+        $uri = ($output[-1].Split('\n') | Where-Object { $_ -like '*OSDiskUri:*'}).split(' ')[-1]
+        if ("" -eq $uri) { Exit 1 } else { Write-Output "::set-output name=vhdUri::$uri" }

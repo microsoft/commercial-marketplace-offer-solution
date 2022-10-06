@@ -1,0 +1,33 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Validate Image
+description: Validate virtual machine image
+inputs:
+  azureCredentials:
+    description: Service prinpical Azure credentials
+    required: true
+  vhdUri:
+    description: The URI of the VHD image to validate
+    required: true
+  location:
+    description: The location where the temporary VM will be created
+    required: true
+    default: westus
+  outputFile:
+    description: The file where test results will be saved
+    required: false
+    default: results.json
+runs:
+  using: composite
+  steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azureCredentials }}
+    - name: Validate Image
+      id: validate-image
+      shell: pwsh
+      run: |
+        $outputFilePath = Join-Path -Path $pwd -ChildPath ${{ inputs.outputFile }}
+        cd ${{ github.action_path }}
+        .\validate_virtualMachineImage.ps1 -vhdUri ${{ inputs.vhdUri }} -location ${{ inputs.location }} -outputFile $outputFilePath
