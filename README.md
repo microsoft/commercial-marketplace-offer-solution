@@ -30,7 +30,11 @@ Please refer to the setup scripts for your operating system for easy installatio
 - [macOS](setup/macos.sh) - installs and uses [Homebrew](https://brew.sh/) to install tools.
 - [Windows](setup/windows.ps1) - installs and uses [Chocolatey](https://chocolatey.org/) (default) to install tools. To install without Chocolatey, run `./windows.ps1 -useChocolatey $false`.
 
-### Step 3: Modify Offer Template Files
+### Step 3: Associate an Azure AD application with your Partner Center account
+
+The scripts in this repository use the Partner Center API to create and manage offers. To use the scripts, you must first associate an Azure AD application with your Partner Center account. Follow the instructions in the Commercial Marketplace [documentation](https://learn.microsoft.com/en-us/azure/marketplace/submission-api-onboard) to create an Azure AD application and associate it with your Partner Center account.
+
+### Step 4: Modify Offer Template Files
 
 Use the following offer templates to build your own Commercial Marketplace offerings. Each offer template includes a README file that contains instructions on how to build the offer and modify it for your use case.
 
@@ -42,7 +46,7 @@ This offer template demonstrates how to build a solution template Azure Applicat
 
 This offer template demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer.
 
-### Step 4: Create GitHub Workflows
+### Step 5: Create GitHub Workflows
 
 GitHub [actions](.github/actions/) and [starter workflows](workflow-templates/) are provided to automate the build, test and publish process for Commercial Marketplace offers. To use an action, refer to it as follows in your workflow:
 ```
