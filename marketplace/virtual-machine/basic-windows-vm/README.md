@@ -17,7 +17,14 @@ az group create --name MyResourceGroup --location westus
 az storage account create -n mystorageacct -g MyResourceGroup -l westus --sku Standard_LRS
 ```
 
-## Step 3: Modify the template for your use case
+## Step 3: Add config.yml file
+
+To run the Azure Portal CLI commands for virtual machine offers, you will need to create a `config.yml` in the `scripts` directory. You can create a copy from the [config.yml.tmpl](../../../scripts/config.yml.tmpl) template file and fill in the following values:
+- aad_id: the client ID of the Azure AD application associated with your Partner Center account
+- aad_secret: the client secret of the Azure AD application associated with your Partner Center account
+- tenant_id: the tenant ID of the Azure AD application associated with your Partner Center account
+
+## Step 4: Modify the template for your use case
 You can use this offer template as a base for your own VM offer. Modify the noted files below to suit your needs.
 
 ### Customize the Packer templates
@@ -44,7 +51,7 @@ If changes are made to the build Packer template (`build.BasicWindowsVMImage.pkr
 
 Please refer to the [Pester documentation](https://pester.dev/docs/quick-start) for more information on how to write Pester tests.
 
-## Step 4: Create the virtual machine image
+## Step 5: Create the virtual machine image
 Update the [variables.pkr.json](variables.pkr.json) to match your newly created storage account and resource group. You can also modify any of the other variables in the file to fit your need.
 
 Build the image and get the VHD URI by running the following command:
@@ -54,9 +61,10 @@ Build the image and get the VHD URI by running the following command:
 
 Once the script has completed successfully, it will output the SAS URI of the VHD created in the storage account. Take a copy of the URI for the next step.
 
-## Step 5: Validate the virtual machine image
+## Step 6: Validate the virtual machine image
 Before creating a virtual machine offer using the image created in the step above, we need to run it through a validation process to ensure that the image meets all of the Azure Marketplace publishing requirements. The VHD URI returned in the previous step will be required.
 
+In the `scripts` directory, run:
 ```
 ./validate_virtualMachineImage.ps1 -vhdUri "<VHD URI>" -location westus
 ```
@@ -79,9 +87,10 @@ Clean up the resources by deleting the VM resource group:
 az group delete -n MyVmResourceGroup
 ```
 
-## Step 6: Create the virtual machine offer
+## Step 7: Create the virtual machine offer
 Before we create the virtual machine offer, we need to update the `publisherId` in the [offer listing config](listing_config.json). Once updated, we can create the virtual machine offer, using the VHD URI returned from the **Create the virtual machine image** step.
 
+In the `scripts` directory, run:
 ```
 ./add_virtualMachineOffer.ps1 -vhdUri "<VHD URI>" -vmOfferConfigFile ../marketplace/virtual-machine/basic-windows-vm/listing_config.json -logosPath ../marketplace/virtual-machine/basic-windows-vm/logos -storageAccountName mystorageacct
 ```
@@ -90,7 +99,7 @@ During the execution of this script, dynamic variables will be parsed into the `
 
 Once the script has completed successfully, a draft virtual machine offer will have been created in [Microsoft Partner Center](https://partner.microsoft.com/en-us/dashboard/marketplace-offers/overview).
 
-## Step 7: Publishing a Virtual Machine Offer
+## Step 8: Publishing a Virtual Machine Offer
 Once the draft offer created in the above step has been reviewed and confirmed, the offer can be submitted for publishing.
 
 To start the publishing process:
