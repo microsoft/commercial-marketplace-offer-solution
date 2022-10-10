@@ -48,7 +48,22 @@ This offer template demonstrates how to create a Windows Server 2019 virtual mac
 
 ### Step 5: Create GitHub Workflows
 
-GitHub [actions](.github/actions/) and [starter workflows](workflow-templates/) are provided to automate the build, test and publish process for Commercial Marketplace offers. To use an action, refer to it as follows in your workflow:
+GitHub [actions](.github/actions/) and [starter workflows](workflow-templates/) are provided to automate the build, test and publish process for Commercial Marketplace offers.
+
+Before using a workflow or action, create a new **actions** repository secret (AZURE_CREDENTIALS) with the following:
+```
+{
+  "clientId": "<Azure AD application client ID>",
+  "clientSecret": "<Azure AD application client secret>",
+  "subscriptionId": "<Azure subscription ID>",
+  "tenantId": "<Azure AD application tenant ID>",
+  "resourceManagerEndpointUrl": "https://management.azure.com/"
+}
+```
+
+For more information on creating a GitHub actions repository secret, see [Creating encrypted secrets for a repository](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
+
+To use an action, refer to it as follows in your workflow:
 ```
 microsoft/commercial-marketplace-offer-solution/.github/actions/[ACTION DIRECTORY]
 ```
