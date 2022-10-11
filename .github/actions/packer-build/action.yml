@@ -37,5 +37,14 @@ runs:
       working-directory: ${{ inputs.workingDirectory }}
       run: |
         $output = packer -machine-readable build -color=false ${{ inputs.target }}
-        $uri = ($output[-1].Split('\n') | Where-Object { $_ -like '*OSDiskUri:*'}).split(' ')[-1]
-        if ("" -eq $uri) { Exit 1 } else { Write-Output "::set-output name=vhdUri::$uri" }
+        try
+        {
+          $uri = ($output[-1].Split('\n') | Where-Object { $_ -like '*OSDiskUri:*'}).split(' ')[-1]
+          if ("" -eq $uri) { Exit 1 } else { Write-Output "::set-output name=vhdUri::$uri" }
+        }
+        catch
+        {
+          Write-Error "There was an issue creating your virtual machine offer, see below for details:"
+          Write-Output $output
+          Exit 1
+        }

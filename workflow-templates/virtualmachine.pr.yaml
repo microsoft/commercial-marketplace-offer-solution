@@ -1,0 +1,85 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Virtual Machine PR
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ $default-branch ]
+
+env:
+  APPLICATION_DIRECTORY: marketplace/virtual-machine/basic-windows-vm
+
+jobs:
+  ValidatePackerTemplate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target: build.BasicWindowsVMImage.pkr.hcl source.windowsvhd.pkr.hcl
+          working_directory: ${{ env.APPLICATION_DIRECTORY }}
+  BuildValidateImage:
+    runs-on: ubuntu-latest
+    needs: ValidatePackerTemplate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Packer Variables
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: "${{ env.APPLICATION_DIRECTORY }}/variables.pkr.json"
+        env:
+          variable.image_vhd_name.default: basicwinvm_${{ github.run_number }}
+          variable.temp_resource_group_name.default: basicwinvm-${{ github.run_number }}-rg
+      - name: Build Image
+        id: build-image
+        uses: ./.github/actions/packer-build
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          target: .
+          workingDirectory: ${{ env.APPLICATION_DIRECTORY }}
+      - name: Validate Image
+        id: validate-image
+        uses: ./.github/actions/validate-image
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          vhdUri: ${{ steps.build-image.outputs.vhdUri }}
+      - name: Set VHD URI
+        shell: pwsh
+        run: |
+          $vhdSasUri = ./scripts/get_vhdSasUri.ps1 -uri ${{ steps.build-image.outputs.vhdUri }}
+          $listingConfigFile = "${{ env.APPLICATION_DIRECTORY }}/listing_config.json"
+          $offerListingConfigRaw = Get-Content $listingConfigFile -Raw
+          $offerListingConfig = $ExecutionContext.InvokeCommand.ExpandString($offerListingConfigRaw)
+          Out-File -InputObject $offerListingConfig -FilePath $listingConfigFile -Force
+      - name: Build and create/update offer
+        uses: ./.github/actions/commercial-marketplace
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          configFilePath: "${{ env.APPLICATION_DIRECTORY }}/config.yml"
+          offerType: vm
+          command: create
+          applicationName: contoso-vm
+          applicationDirectory: ${{ env.APPLICATION_DIRECTORY }}
+          logosDirectory: "${{ env.APPLICATION_DIRECTORY }}/logos"
+          logosStorageAccountName: ${{ secrets.AZURE_STORAGEACCOUNTNAME }}
+        timeout-minutes: 5
+      - name: Delete offer
+        uses: ./.github/actions/commercial-marketplace
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          configFilePath: "${{ env.APPLICATION_DIRECTORY }}/config.yml"
+          offerType: vm
+          command: delete
+          applicationName: contoso-vm
+          applicationDirectory: ${{ env.APPLICATION_DIRECTORY }}
+        timeout-minutes: 5
+      - name: Delete VHD from storage account
+        shell: pwsh
+        run: |
+          ./scripts/remove_vhd.ps1 -vhdUri ${{ steps.build-image.outputs.vhdUri }}
