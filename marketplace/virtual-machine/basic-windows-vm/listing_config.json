@@ -7,7 +7,7 @@
     "microsoft-azure-marketplace": 39
   },
   "definition": {
-    "displayText": "Contoso Virtual Machine Offer",
+    "displayText": "contoso-vm",
     "offer": {
       "microsoft-azure-marketplace.title": "Contoso App",
       "microsoft-azure-marketplace.summary": "Contoso App makes dev ops a breeze",

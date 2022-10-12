@@ -1,0 +1,4 @@
+{
+    "name": "Virtual Machine PR Workflow",
+    "description": "This virtual machine PR workflow template is used to build and validate the VM image. If the build is successful, it will verify the offer can be created in the Partner Center account."
+}

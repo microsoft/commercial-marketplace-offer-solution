@@ -6,6 +6,9 @@ inputs:
   azureCredentials:
     description: Service prinpical Azure credentials
     required: true
+  configFilePath:
+    description: The output path of the config.yml file
+    default: ''
   offerType:
     description: The offer type to run command on
     required: true
@@ -21,6 +24,18 @@ inputs:
   applicationDirectory:
     description: The path to your offer's contents
     default: ''
+  logosDirectory:
+    description: The path to your offer's logos directory
+    default: ''
+  logosStorageAccountName:
+    description: The name of the storage account where logos will be uploaded
+    default: ''
+  logosStorageAccountContainer:
+    description: The name of the storage account container where logos will be uploaded
+    default: 'logos'
+  notificationEmails:
+    description: Comma-separated list of email addresses to be notified of the progress of the publishing operation
+    default: ''
   workingDirectory:
     description: The working directory
     default: '.'
@@ -31,12 +46,26 @@ runs:
       uses: azure/login@v1
       with:
         creds: ${{ inputs.azureCredentials }}
+    - name: Generate config.yml
+      shell: pwsh
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        & $env:GITHUB_ACTION_PATH/generate_config.ps1 -outFile "${{ inputs.configFilePath }}"
+      env:
+        AZURE_CREDENTIALS: ${{ inputs.azureCredentials }}
+      if: ${{ inputs.configFilePath != '' }}
     - name: Package zip file
       shell: bash
       working-directory: ${{ inputs.workingDirectory }}
       run: |
         $GITHUB_ACTION_PATH/zip_package.sh --contents-folder "${{ inputs.applicationDirectory }}/app-contents" --output-file "${{ inputs.applicationDirectory }}/marketplacePackage.zip"
-      if: ${{ (inputs.offerType == 'st' || inputs.offerType == 'ma') && (inputs.command == 'create' || inputs.command == 'update' || inputs.command == 'create-plan' || inputs.command == 'update-plan') }}
+      if: ${{ (inputs.offerType == 'st' || inputs.offerType == 'ma' || inputs.offerType == 'app') && (inputs.command == 'create' || inputs.command == 'update' || inputs.command == 'create-plan' || inputs.command == 'update-plan') }}
+    - name: Upload logos
+      shell: pwsh
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        & $env:GITHUB_ACTION_PATH/upload_logos.ps1 -logosPath "${{ inputs.logosDirectory }}" -storageAccountName ${{ inputs.logosStorageAccountName }} -storageContainer ${{ inputs.logosStorageAccountContainer }} -listingConfigFile "${{ inputs.applicationDirectory }}/listing_config.json"
+      if: ${{ inputs.logosDirectory != '' && inputs.offerType == 'vm' && (inputs.command == 'create' || inputs.command == 'update') }}
     - name: Set reseller channel state
       shell: bash
       working-directory: ${{ inputs.applicationDirectory }}
@@ -47,6 +76,15 @@ runs:
         fi
         echo "RESELLER_CHANNEL=$reseller_config" >> $GITHUB_ENV
       if: ${{ inputs.command == 'create' || inputs.command == 'update' }}
+    - name: Create offer
+      id: create-offer
+      uses: ./.github/actions/azpc
+      with:
+        command: create
+        offerType: ${{ inputs.offerType }}
+        arguments: '--name ${{ inputs.applicationName }} --config-json listing_config.json --app-path .'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ inputs.command == 'create' }}
     - name: Upsert offer
       id: upsert-offer
       uses: ./.github/actions/azpc
@@ -55,7 +93,7 @@ runs:
         offerType: ${{ inputs.offerType }}
         arguments: '--update --name ${{ inputs.applicationName }} --config-json listing_config.json --app-path .'
         workingDirectory: ${{ inputs.applicationDirectory }}
-      if: ${{ inputs.command == 'create' }}
+      if: ${{ inputs.command == 'upsert' }}
     - name: Update offer
       id: update-offer
       uses: ./.github/actions/azpc
@@ -72,7 +110,7 @@ runs:
         offerType: ${{ inputs.offerType }}
         arguments: '--update --name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }} --config-json listing_config.json --app-path .'
         workingDirectory: ${{ inputs.applicationDirectory }}
-      if: ${{ (inputs.command == 'create' && inputs.planName != '') || inputs.command == 'create-plan' }}
+      if: ${{ inputs.planName != '' && (inputs.command == 'create' || inputs.command == 'create-plan') }}
     - name: Update plan
       uses: ./.github/actions/azpc
       with:
@@ -80,7 +118,7 @@ runs:
         offerType: ${{ inputs.offerType }}
         arguments: '--name ${{ inputs.applicationName }} --plan-name ${{ inputs.planName }} --config-json listing_config.json --app-path .'
         workingDirectory: ${{ inputs.applicationDirectory }}
-      if: ${{ (inputs.command == 'update' && inputs.planName != '') || inputs.command == 'update-plan' }}
+      if: ${{ inputs.planName != '' && (inputs.command == 'update' || inputs.command == 'update-plan') }}
     - name: Delete offer
       id: delete-offer
       uses: ./.github/actions/azpc
@@ -88,6 +126,7 @@ runs:
         command: delete
         offerType: ${{ inputs.offerType }}
         arguments: '--name ${{ inputs.applicationName }}'
+        workingDirectory: ${{ inputs.applicationDirectory }}
       if: ${{ inputs.command == 'delete' }}
     - name: Delete plan
       uses: ./.github/actions/azpc
@@ -104,4 +143,12 @@ runs:
         offerType: ${{ inputs.offerType }}
         arguments: '--name ${{ inputs.applicationName }}'
         workingDirectory: ${{ inputs.applicationDirectory }}
-      if: ${{ inputs.command == 'publish' }}
+      if: ${{ inputs.command == 'publish' && inputs.offerType != 'vm' }}
+    - name: Publish offer
+      uses: ./.github/actions/azpc
+      with:
+        command: publish
+        offerType: vm
+        arguments: '--name ${{ inputs.applicationName }} --notification-emails "${{ inputs.notificationEmails }}" --config-json listing_config.json --app-path .'
+        workingDirectory: ${{ inputs.applicationDirectory }}
+      if: ${{ inputs.command == 'publish' && inputs.offerType == 'vm' }}
