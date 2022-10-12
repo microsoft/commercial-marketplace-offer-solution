@@ -1,10 +1,15 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 name: Solution Template Release
+
 on:
   workflow_dispatch:
   push:
     branches: [ $default-branch ]
+
+env:
+  APPLICATION_DIRECTORY: marketplace/application/base-image-vm
+
 jobs:
   ValidateARMTemplates:
     runs-on: ubuntu-latest
@@ -14,12 +19,12 @@ jobs:
       - name: Generate ARM template from Bicep templates
         uses: Azure/bicep-build-action@v1.0.1
         with:
-          bicepFilePath: ./marketplace/application/base-image-vm/app-contents/mainTemplate.bicep
-          outputFilePath: ./marketplace/application/base-image-vm/app-contents/mainTemplate.json
+          bicepFilePath: "${{ env.APPLICATION_DIRECTORY }}/app-contents/mainTemplate.bicep"
+          outputFilePath: "${{ env.APPLICATION_DIRECTORY }}/app-contents/mainTemplate.json"
       - name: Run ARM-TTK
         uses: ./.github/actions/run-armttk
         with:
-          templatesFolderPath: ./marketplace/application/base-image-vm/app-contents
+          templatesFolderPath: "${{ env.APPLICATION_DIRECTORY }}/app-contents"
           armttkVersion: aka.ms/arm-ttk-latest
   CreatePublishOffer:
     runs-on: ubuntu-latest
@@ -33,15 +38,15 @@ jobs:
           azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
           offerType: st
           command: create
-          applicationName: contoso-st
+          applicationName: contoso-app
           planName: base-image-vm
-          applicationDirectory: ./marketplace/application/base-image-vm
+          applicationDirectory: ${{ env.APPLICATION_DIRECTORY }}
         timeout-minutes: 5
       - name: Publish offer
         uses: ./.github/actions/commercial-marketplace
         with:
           azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
-          offerType: st
+          offerType: app
           command: publish
-          applicationName: contoso-st
+          applicationName: contoso-app
         timeout-minutes: 5
