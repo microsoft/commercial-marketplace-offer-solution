@@ -18,6 +18,9 @@
 # Find more details about the github_token here https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
 on:
   workflow_dispatch:
+# Uncomment this section to run the action nightly
+#  schedule:
+#    - cron: '0 0 * * *'  # every day at midnight
 
 jobs:
   repo-sync:
