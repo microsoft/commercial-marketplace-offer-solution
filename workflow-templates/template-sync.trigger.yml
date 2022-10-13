@@ -1,0 +1,16 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:          
+          token: ${{ secrets.PAT }}
+      - name: actions-template-sync
+        uses: AndreasAugustin/actions-template-sync@v0.4.2-draft
+        with:
+          github_token: ${{ secrets.PAT }}
+          source_repo_path: microsoft/commercial-marketplace-offer-solution
