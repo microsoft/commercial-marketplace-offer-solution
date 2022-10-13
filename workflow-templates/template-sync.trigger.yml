@@ -2,6 +2,12 @@
 # Licensed under the MIT License.
 # 
 # This action will create a new Pull Request containing the latest changes from the base Template repository.
+# If this action fails, it may require a manual sync to be performed. Use the following command
+# git pull <insert-pat>@github.com/microsoft/commercial-marketplace-offer-solution \
+#  --allow-unrelated-histories \
+#  --squash \
+#  --strategy=recursive \
+#  -X theirs
 #
 # Note that the 'secrets.github_token' token has specific permissions.
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
