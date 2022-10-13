@@ -1,5 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
+# 
+# This action will create a new Pull Request containing the latest changes from the base Template repository.
 #
 # Note that the 'secrets.github_token' token has specific permissions.
 # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
