@@ -1,3 +1,13 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+#
+# Note that the 'secrets.github_token' token has specific permissions.
+# https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+#
+# You may need to create a Personal Access Token (PAT) and add it as a secret (ex: PAT) to use in your workflow. https://github.com/settings/tokens
+# Then replace ${{ secrets.github_token }} with ${{ secrets.PAT }}
+#
+# Find more details about the github_token here https://docs.github.com/en/actions/security-guides/automatic-token-authentication#granting-additional-permissions
 on:
   workflow_dispatch:
 
@@ -8,9 +18,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:          
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.github_token }}
       - name: actions-template-sync
         uses: AndreasAugustin/actions-template-sync@v0.4.2-draft
         with:
-          github_token: ${{ secrets.PAT }}
+          github_token: ${{ secrets.github_token }}
           source_repo_path: microsoft/commercial-marketplace-offer-solution
