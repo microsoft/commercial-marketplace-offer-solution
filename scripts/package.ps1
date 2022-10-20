@@ -37,13 +37,10 @@ if ("" -ne $offerId)
   ((Get-Content $mainTemplateFile) -Replace 'pid-[A-z0-9]{8}-[A-z0-9]{4}-[A-z0-9]{4}-[A-z0-9]{4}-[A-z0-9]{12}-partnercenter', $partnerCenterId) | Out-File -Force $mainTemplateFile
 }
 
-Copy-Item "$assetsFolderPath\createUiDefinition.json"
-Copy-Item "$assetsFolderPath\*.ps1"
+Copy-Item "$assetsFolderPath\*" -Recurse -Exclude "parameters.json*","*.bicep"
 
 Set-Location "..\"
-Compress-Archive -Update -Path "assets\createUiDefinition.json" -DestinationPath "marketplacePackage.zip"
-Compress-Archive -Update -Path "assets\mainTemplate.json" -DestinationPath "marketplacePackage.zip"
-Compress-Archive -Update -Path "assets\*.ps1" -DestinationPath "marketplacePackage.zip"
+Compress-Archive -Path "assets\*" -DestinationPath "marketplacePackage.zip" -Force
 
 Set-Location $scriptFolder
 
