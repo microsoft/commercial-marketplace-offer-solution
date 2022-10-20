@@ -22,9 +22,7 @@ If you find a bug in the source code or a mistake in the documentation, you can 
 [submit a Pull Request](#submit-pr) with a fix.
 
 ## <a name="feature"></a> Want a Feature?
-You can *request* a new feature by [submitting an issue](#submit-issue) to the GitHub
-Repository. If you would like to *implement* a new feature, please submit an issue with
-a proposal for your work first, to be sure that we can use it.
+You can *request* a new feature by [opening a new discussion](https://github.com/microsoft/commercial-marketplace-offer-solution/discussions/categories/feature-requests) in the GitHub Repository.
 
 * **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
