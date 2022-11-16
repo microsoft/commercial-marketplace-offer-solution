@@ -34,8 +34,17 @@ jobs:
       - name: Run Pester tests
         run: |
           Install-Module -Name Pester -Force -SkipPublisherCheck
-          Set-Location "marketplace/application/base-image-vm"
+          Set-Location ${{ env.APPLICATION_DIRECTORY }}
           Invoke-Pester -Path "tests"
+        shell: pwsh
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Run Deployment tests
+        run: |
+          Set-Location ${{ env.APPLICATION_DIRECTORY }}/tests
+          ./validateDeployment.ps1
         shell: pwsh
   VerifyOfferCreation:
     runs-on: ubuntu-latest
