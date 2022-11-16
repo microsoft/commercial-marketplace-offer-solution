@@ -5,7 +5,7 @@ name: Solution Template PR
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ main ]
 
 env:
   APPLICATION_DIRECTORY: marketplace/application/base-image-vm
