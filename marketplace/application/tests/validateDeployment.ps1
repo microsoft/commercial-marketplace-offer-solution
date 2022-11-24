@@ -7,6 +7,11 @@
 #   az login                                                                                       #
 #   az account set -s <SUBSCRIPTION ID>                                                            #
 ####################################################################################################
+Param (
+    [Parameter(Mandatory = $True, HelpMessage = "Path to solution assets folder")]
+    [String] $assetsFolder
+)
+
 function Get-Password {
     $TokenSet = @{
         Upper = [Char[]]'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -33,13 +38,13 @@ $resourceGroup = ("test_" + (get-date).ToString("MMddyyhhmmss") + "_rg")
 $storageAccountName = ("sa" + (get-date).ToString("MMddyyhhmmss"))
 $location = "westus"
 
-$assetsFolder = Resolve-Path "../app-contents"
+$assetsFolder = Resolve-Path "$assetsFolder/app-contents"
 $parametersFile = "parameters.json"
 
 try
 {
     # Generate parameters
-    $parameters = Get-Content -Path "../app-contents/parameters.json.tmpl" -Raw | ConvertFrom-Json
+    $parameters = Get-Content -Path "$assetsFolder/parameters.json.tmpl" -Raw | ConvertFrom-Json
     $parameters.adminPassword.value = Get-Password
 
     # Create storate account
@@ -47,7 +52,7 @@ try
     az group create --name $resourceGroup --location $location
     az storage account create -n $storageAccountName -g $resourceGroup -l $location --sku Standard_LRS
 
-    Set-Location ../../../../scripts
+    Set-Location ../../../scripts
 
     # Generate parameters.json
     Set-Content -Path $parametersFile -Value ($parameters | ConvertTo-Json -Depth 100)

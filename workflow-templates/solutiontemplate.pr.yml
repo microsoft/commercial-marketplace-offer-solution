@@ -9,6 +9,7 @@ on:
 
 env:
   APPLICATION_DIRECTORY: marketplace/application/base-image-vm
+  TEST_DIRECTORY: marketplace/application/tests
 
 jobs:
   ValidateARMTemplates:
@@ -35,7 +36,7 @@ jobs:
         run: |
           Install-Module -Name Pester -Force -SkipPublisherCheck
           Set-Location ${{ env.APPLICATION_DIRECTORY }}
-          Invoke-Pester -Path "tests"
+          Invoke-Pester -Path "../tests"
         shell: pwsh
       - name: Azure Login
         uses: azure/login@v1
@@ -43,7 +44,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Run Deployment tests
         run: |
-          Set-Location ${{ env.APPLICATION_DIRECTORY }}/tests
+          Set-Location ${{ env.TEST_DIRECTORY }}
           ./validateDeployment.ps1
         shell: pwsh
   VerifyOfferCreation:
