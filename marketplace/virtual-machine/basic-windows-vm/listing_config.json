@@ -79,12 +79,9 @@
         "microsoft-azure-virtualmachines.windowsOSType": "Other",
         "microsoft-azure-virtualmachines.operationSystem": "Contoso App",
         "microsoft-azure-virtualmachines.recommendedVMSizes": [
-          "a0-basic",
-          "a0-standard",
-          "a1-basic",
-          "a1-standard",
-          "a2-basic",
-          "a2-standard"
+          "b1s-standard",
+          "b2s-standard",
+          "b4ms-standard"
         ],
         "microsoft-azure-virtualmachines.openPorts": [],
         "microsoft-azure-virtualmachines.vmImages": {

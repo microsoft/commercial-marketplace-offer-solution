@@ -38,19 +38,16 @@
         ],
         "constraints": {
           "allowedSizes": [
-            "a0-basic",
-            "a0-standard",
-            "a1-basic",
-            "a1-standard",
-            "a2-basic",
-            "a2-standard"
+            "Standard_D2_v4",
+            "Standard_D2s_v4",
+            "Standard_D2ds_v4"
           ]
         },
         "osPlatform": "Windows",
         "imageReference": {
-          "publisher": "contoso",
-          "offer": "contoso-vm",
-          "sku": "contososkuidentifier"
+          "publisher": "MicrosoftWindowsServer",
+          "offer": "WindowsServer",
+          "sku": "2019-Datacenter"
         }
       },
       {

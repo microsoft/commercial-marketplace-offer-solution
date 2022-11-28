@@ -40,7 +40,7 @@ jobs:
       - name: Run Deployment tests
         run: |
           Set-Location ${{ env.TEST_DIRECTORY }}
-          ./validateDeployment.ps1
+          ./validateDeployment.ps1 "../../../${{ env.APPLICATION_DIRECTORY }}"
         shell: pwsh
   VerifyOfferCreation:
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           offerType: st
           command: create
           applicationName: contoso-app
-          planName: base-image-vm
+          planName: vm-offer-image
           applicationDirectory: ${{ env.APPLICATION_DIRECTORY }}
         timeout-minutes: 5
       - name: Delete offer

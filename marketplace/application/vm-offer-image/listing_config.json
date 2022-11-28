@@ -65,8 +65,8 @@
   },
   "technical_configuration": {
     "_note"         : "Only required for emitting metering events",
-    "tenant_id"     : "72f988bf-86f1-41af-91ab-2d7cd011db47",
-    "application_id": "d0d4ef7c-a63e-4727-ae6f-1f02b3f23755"
+    "tenant_id"     : "<AAD Tenant Id>",
+    "application_id": "<AAD Application ID>"
   },
   "plan_overview"          : {
     "vm-offer-image": {
