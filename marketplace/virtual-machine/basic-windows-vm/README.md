@@ -106,3 +106,9 @@ To start the publishing process:
 ```
 azpc vm publish --name "<Offer Name>" --app-path ../marketplace/virtual-machine/basic-windows-vm --config-json listing_config.json --notification-emails "<Email Address/es>"
 ```
+
+## Step 9: Accepting the Azure Marketplace Terms
+Once the offer has finished publishing, run the following command to accept the Azure Marketplace terms before using the offer's image to create virtual machines:
+```
+az vm image accept-terms --publisher "<Publisher>" --offer "<Offer Name>" --plan "<Plan Name>"
+```
