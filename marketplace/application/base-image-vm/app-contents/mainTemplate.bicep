@@ -84,12 +84,12 @@ var vmImage = {
   version: 'latest'
 }
 
-var vmName_var = vmName
-var ipconfName = '${vmName_var}-ipconf'
-var nicName_var = '${vmName_var}-nic'
-var nsgName_var = '${vmName_var}-nsg'
+var ipconfName = '${vmName}-ipconf'
+var nicName = '${vmName}-nic'
+var nsgName = '${vmName}-nsg'
+var osDiskName = '${vmName}-osdisk'
 
-var tags_var = {
+var tags = {
   offer: 'Sample Basic Windows 2019 VM'
 }
 
@@ -123,11 +123,11 @@ resource publicIp 'Microsoft.Network/publicIPAddresses@2021-03-01' = if (publicI
       domainNameLabel: publicIpDns
     }
   }
-  tags: (contains(outTagsByResource, 'Microsoft.Network/publicIPAddresses') ? union(tags_var, outTagsByResource['Microsoft.Network/publicIPAddresses']) : tags_var)
+  tags: (contains(outTagsByResource, 'Microsoft.Network/publicIPAddresses') ? union(tags, outTagsByResource['Microsoft.Network/publicIPAddresses']) : tags)
 }
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2021-03-01' = {
-  name: nsgName_var
+  name: nsgName
   location: location
   properties: {
     securityRules: [
@@ -166,7 +166,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-03-01' = if (vnetNewOrExis
       }
     ]
   }
-  tags: (contains(outTagsByResource, 'Microsoft.Network/virtualNetworks') ? union(tags_var, outTagsByResource['Microsoft.Network/virtualNetworks']) : tags_var)
+  tags: (contains(outTagsByResource, 'Microsoft.Network/virtualNetworks') ? union(tags, outTagsByResource['Microsoft.Network/virtualNetworks']) : tags)
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' existing = {
@@ -175,7 +175,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-01-01' existing 
 }
 
 resource nic 'Microsoft.Network/networkInterfaces@2021-03-01' = {
-  name: nicName_var
+  name: nicName
   location: location
   dependsOn: [
     vnet
@@ -202,11 +202,11 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-03-01' = {
       id: nsg.id
     }
   }
-  tags: (contains(outTagsByResource, 'Microsoft.Network/networkInterfaces') ? union(tags_var, outTagsByResource['Microsoft.Network/networkInterfaces']) : tags_var)
+  tags: (contains(outTagsByResource, 'Microsoft.Network/networkInterfaces') ? union(tags, outTagsByResource['Microsoft.Network/networkInterfaces']) : tags)
 }
 
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-03-01' = {
-  name: vmName_var
+  name: vmName
   location: location
   properties: {
     hardwareProfile: {
@@ -215,7 +215,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-03-01' = {
     storageProfile: {
       imageReference: vmImage
       osDisk: {
-        name: '${vmName_var}-osdisk'
+        name: osDiskName
         createOption: 'FromImage'
         caching: 'ReadWrite'
         diskSizeGB: 128
@@ -225,7 +225,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-03-01' = {
       }
     }
     osProfile: {
-      computerName: vmName_var
+      computerName: vmName
       adminUsername: adminUsername
       adminPassword: adminPassword
     }
@@ -237,7 +237,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-03-01' = {
       ]
     }
   }
-  tags: (contains(outTagsByResource, 'Microsoft.Compute/virtualMachines') ? union(tags_var, outTagsByResource['Microsoft.Compute/virtualMachines']) : tags_var)
+  tags: (contains(outTagsByResource, 'Microsoft.Compute/virtualMachines') ? union(tags, outTagsByResource['Microsoft.Compute/virtualMachines']) : tags)
 }
 
 module writeText './writeTextExtension.bicep' = {
@@ -246,7 +246,7 @@ module writeText './writeTextExtension.bicep' = {
     _artifactsLocation: _artifactsLocation
     _artifactsLocationSasToken: _artifactsLocationSasToken
     location: location
-    vmName: vmName_var
+    vmName: vmName
     fileName: fileName
     fileContent: fileContent
   }

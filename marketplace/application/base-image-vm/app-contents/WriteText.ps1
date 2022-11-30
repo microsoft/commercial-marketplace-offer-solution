@@ -5,5 +5,4 @@ Param (
     [String] $fileContent = "MyContent"
 )
 
-Set-Location -Path "C:\"
-Set-Content "$fileName.txt" $fileContent
+Set-Content "C:\$fileName.txt" $fileContent
