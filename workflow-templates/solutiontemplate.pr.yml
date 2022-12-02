@@ -29,7 +29,6 @@ jobs:
           armttkVersion: aka.ms/arm-ttk-latest
   RunTests:
     runs-on: windows-latest
-    needs: ValidateARMTemplates
     steps:
       - name: Checkout
         uses: actions/checkout@v3
