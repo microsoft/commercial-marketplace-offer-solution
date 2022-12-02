@@ -38,13 +38,13 @@ $resourceGroup = ("test_" + (get-date).ToString("MMddyyhhmmss") + "_rg")
 $storageAccountName = ("sa" + (get-date).ToString("MMddyyhhmmss"))
 $location = "westus"
 
-$assetsFolder = Resolve-Path "$assetsFolder/app-contents"
+$appContentsFolder = Resolve-Path "$assetsFolder/app-contents"
 $parametersFile = "parameters.json"
 
 try
 {
     # Generate parameters
-    $parameters = Get-Content -Path "$assetsFolder/parameters.json.tmpl" -Raw | ConvertFrom-Json
+    $parameters = Get-Content -Path "$appContentsFolder/parameters.json.tmpl" -Raw | ConvertFrom-Json
     $parameters.adminPassword.value = Get-Password
 
     # Create storate account
@@ -59,7 +59,7 @@ try
 
     # Package and deploy the solution
     Write-Output "Deploying resources to Azure subscription $subscriptionId..."
-    ./package.ps1 -assetsFolder $assetsFolder -releaseFolder $releaseFolder
+    ./package.ps1 -assetsFolder $appContentsFolder -releaseFolder $releaseFolder
     ./devDeploy.ps1 -resourceGroup $resourceGroup -location $location -assetsFolder "$releaseFolder/assets" -parametersFile $parametersFile -storageAccountName $storageAccountName
 
     $deployments = az deployment group list --resource-group $resourceGroup  | ConvertFrom-Json
