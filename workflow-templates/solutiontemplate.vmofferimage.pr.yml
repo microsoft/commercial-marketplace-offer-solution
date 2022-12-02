@@ -1,6 +1,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
-name: Solution Template PR
+name: Solution Template using Virtual Machine offer image PR
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
     branches: [ $default-branch ]
 
 env:
-  APPLICATION_DIRECTORY: marketplace/application/base-image-vm
+  APPLICATION_DIRECTORY: marketplace/application/vm-offer-image
   TEST_DIRECTORY: marketplace/application/tests
 
 jobs:
@@ -32,12 +32,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Run Pester tests
-        run: |
-          Install-Module -Name Pester -Force -SkipPublisherCheck
-          Set-Location ${{ env.APPLICATION_DIRECTORY }}
-          Invoke-Pester -Path "../tests"
-        shell: pwsh
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -59,7 +53,7 @@ jobs:
           offerType: st
           command: create
           applicationName: contoso-app
-          planName: base-image-vm
+          planName: vm-offer-image
           applicationDirectory: ${{ env.APPLICATION_DIRECTORY }}
         timeout-minutes: 5
       - name: Delete offer

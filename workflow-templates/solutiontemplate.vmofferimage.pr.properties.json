@@ -1,0 +1,4 @@
+{
+    "name": "Solution Template using Virtual Machine offer image PR Workflow",
+    "description": "This solution template PR workflow template is used to validate the ARM templates and verify the virtual machine offer image can be used as well as the solution template offer can be created in the Partner Center account."
+}

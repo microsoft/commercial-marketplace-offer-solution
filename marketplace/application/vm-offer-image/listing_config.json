@@ -1,0 +1,94 @@
+{
+  "offer_setup"            : {
+    "alias"    : "contoso-app",
+    "testDrive": false,
+    "crm"      : ""
+  },
+  "property_settings"      : {
+    "leveledCategories"  : {
+      "developer-tools-azure-apps": [
+        "other-developer-tools"
+      ]
+    }
+  },
+  "offer_listing"          : {
+    "title"              : "Solution Template with Virtual Machine offer image",
+    "publisher_name"     : "Contoso Inc.",
+    "summary"            : "<Search results Summary*>",
+    "short_description"  : "<Short description*>",
+    "description"        : "<p>This is a description that uses html tags</p>",
+    "keywords"           : [
+      "design",
+      "simulation",
+      "engineer"
+    ],
+    "listing_contacts"   : [
+      {
+        "type" : "CustomerSupport",
+        "email": "name@email.com",
+        "name" : "FirstName LastName",
+        "phone": "+5555555555",
+        "uri"  : "https://website.design/moreinfo/contactus"
+      },
+      {
+        "type" : "Engineering",
+        "email": "name@company.com",
+        "name" : "Name Name",
+        "phone": "+5555555555"
+      }
+    ],
+    "listing_uris"       : [
+      {
+        "type"       : "PrivacyUri",
+        "displayText": "Privacy Url",
+        "uri"        : "https://website.design/eula"
+      },
+      {
+        "type"       : "PublicCloudSupport",
+        "displayText": "Privacy PublicCloudSupport",
+        "uri"        : "https://website.design/PublicCloudSupport"
+      }
+    ],
+    "listing_logos"      : {
+      "logo_large" : "virtual-machine_216_216.png",
+      "logo_small" : "virtual-machine_48_48.png",
+      "logo_medium": "virtual-machine_90_90.png",
+      "logo_wide"  : "virtual-machine_255_115.png"
+    },
+    "listing_screenshots": {},
+    "listing_videos"     : {}
+  },
+  "preview_audience"       : {
+    "subscriptions": [
+      "66cee5af-ac62-4e46-a779-feff32a4f509"
+    ]
+  },
+  "technical_configuration": {
+    "_note"         : "Only required for emitting metering events",
+    "tenant_id"     : "<AAD Tenant Id>",
+    "application_id": "<AAD Application ID>"
+  },
+  "plan_overview"          : {
+    "vm-offer-image": {
+      "plan_listing"            : {
+        "title"              : "Base Image VM",
+        "shortDescription"  : "Short description",
+        "description"        : "<p>This is a description that uses html tags</p>"
+      },
+      "pricing_and_availability": {
+        "visibility"                 : "private",
+        "azure_private_subscriptions": [
+          {
+            "ID": "66cee5af-ac62-4e46-a779-feff32a4f509"
+          }
+        ]
+      },
+      "technical_configuration" : {
+        "version"               : "0.0.1",
+        "allow_jit_access"      : false
+      }
+    }
+  },
+  "co-sell"                : {},
+  "resell"                 : {}
+}

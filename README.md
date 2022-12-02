@@ -46,6 +46,10 @@ This offer template demonstrates how to build a solution template Azure Applicat
 
 This offer template demonstrates how to create a Windows Server 2019 virtual machine image with Chocolatey and Microsoft Edge installed. The image can then be used to create an Azure Virtual Machine offer.
 
+### [Solution Template using a Virtual Machine Offer Image](marketplace/application/vm-offer-image/README.md)
+
+This offer template demonstrates how to build a solution template Azure Application offer that uses a VM image from a Virtual Machine offer.
+
 ### Step 5: Create GitHub Workflows
 
 GitHub [actions](.github/actions/) and [starter workflows](workflow-templates/) are provided to automate the build, test and publish process for Commercial Marketplace offers.
