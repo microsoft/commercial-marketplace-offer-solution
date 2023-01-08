@@ -1,0 +1,44 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Product Ingestion API
+description: Build and publish Commercial Marketplace offers using the Product Ingestion API.
+inputs:
+  azureCredentials:
+    description: Azure service principal credentials
+    required: true
+  configFilePath:
+    description: The path to the offer configuration file
+    default: 'configuration.json'
+  command:
+    description: 'The command to run. Options: configure, publish'
+    required: true
+  productExternalId:
+    description: 'The external ID of the product. The external ID of a product translates to its "offerID" and the external ID of a plan translates to its "planID", as defined upon creation.'
+    required: false
+  targetType:
+    description: 'The target environment. Supported target types are: draft, preview, live.'
+    default: 'preview'
+  workingDirectory:
+    description: The working directory
+    default: '.'
+runs:
+  using: composite
+  steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azureCredentials }}
+    - name: Configure Offer
+      id: configure-offer
+      shell: pwsh
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        & $env:GITHUB_ACTION_PATH/configure_product.ps1 -productConfigurationFile ${{ inputs.configFilePath }}
+      if: ${{ inputs.command == 'configure' }}
+    - name: Publish Offer
+      id: publish-offer
+      shell: pwsh
+      working-directory: ${{ inputs.workingDirectory }}
+      run: |
+        & $env:GITHUB_ACTION_PATH/publish.ps1 -productExternalId ${{ inputs.productExternalId }} -targetType ${{ inputs.targetType }}
+      if: ${{ inputs.command == 'publish' }}
