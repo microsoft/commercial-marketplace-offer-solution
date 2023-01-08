@@ -298,7 +298,8 @@ function UpdateProduct {
     {
         $resource | Add-Member -Name "product" -value $productDurableId -MemberType NoteProperty
 
-        if ($resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-asset/"))
+        if ($resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-asset/")
+            -or $resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-trailer/"))
         {
             $resource | Add-Member -Name "listing" -value $productListingDurableId -MemberType NoteProperty
         }
