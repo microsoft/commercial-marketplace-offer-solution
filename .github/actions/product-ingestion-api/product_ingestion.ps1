@@ -2,19 +2,13 @@
 # Licensed under the MIT License.
 
 ####################################################################################################
-# Use this script to configure a Commercial Marketplace offer using the Product Ingestion API.     #
-# This script can be used to create a new offer or update an existing offer.                       #
+# Use this script to configure Commercial Marketplace offers using the Product Ingestion API.      #
+# These functions can be used to create a new offer, update an existing offer, or publish an       #
+# offer to preview or live.                                                                        #
 ####################################################################################################
-
-Param (
-    [Parameter(Mandatory = $True, HelpMessage = "The path to the VM listing config file")]
-    [String] $productConfigurationFile
-)
 
 $baseUrl = "https://graph.microsoft.com/rp/product-ingestion"
 $configureBaseUrl = "$baseUrl/configure"
-$productId = ""
-$planId = ""
 
 function GetHeaders {
     $token = az account get-access-token --resource=https://graph.microsoft.com --query accessToken --output tsv
@@ -108,7 +102,6 @@ function WaitForJobComplete {
         [String] $jobId
     )
 
-    $headers = GetHeaders
     $jobResult = ""
     $maxRetries = 5
     $retries = 0
@@ -298,8 +291,7 @@ function UpdateProduct {
     {
         $resource | Add-Member -Name "product" -value $productDurableId -MemberType NoteProperty
 
-        if ($resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-asset/")
-            -or $resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-trailer/"))
+        if ($resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-asset/") -or $resource.'$schema'.StartsWith("https://product-ingestion.azureedge.net/schema/listing-trailer/"))
         {
             $resource | Add-Member -Name "listing" -value $productListingDurableId -MemberType NoteProperty
         }
@@ -325,73 +317,121 @@ function UpdatePlan {
     PostConfigure -configureSchema $configureSchema -resources $planResources
 }
 
-if (Test-Path -Path $productConfigurationFile)
-{
-    Write-Output "Product configuration file found. Using it."
-}
-else
-{
-    Write-Error "Product configuration file not found. Please specify the path to the product configuration file."
-    Exit 1
-}
+function ConfigureProduct {
+    param (
+        [Parameter(Mandatory = $True, HelpMessage = "The path to the VM listing config file")]
+        [String] $productConfigurationFile
+    )
 
-try
-{
-    $configuration = Get-Content $productConfigurationFile -Raw | ConvertFrom-Json
-    $externalId = $configuration.product.identity.externalId
-
-    Write-Output "Checking for existing product with external ID: $externalId"
-    $productDurableId = GetProductDurableId -productExternalId $externalId
-    if ($productDurableId -eq "")
+    if (Test-Path -Path $productConfigurationFile)
     {
-        Write-Output "Creating new product: $externalId"
-        $productDurableId = CreateProduct -configureSchema $configuration.'$schema' -productConfiguration $configuration.product
-        Write-Output "Product $externalId has ID $productDurableId"
-
-        # Update product details
-        UpdateProduct -configureSchema $configuration.'$schema' -productDurableId $productDurableId -productResources $configuration.product.resources
-        Write-Output "Product $externalId updated."
-
-        foreach ($plan in $configuration.plans)
-        {
-            $planExternalId = $plan.identity.externalId
-            Write-Output "Creating new plan: $planExternalId"
-            $planDurableId = CreatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planConfiguration $plan
-            Write-Output "Plan $planExternalId has ID $planDurableId"
-
-            # Update plan details
-            UpdatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planDurableId $planDurableId -planResources $plan.resources
-            Write-Output "Plan $planExternalId updated."
-        }
+        Write-Output "Product configuration file found. Using it."
     }
     else
     {
-        Write-Output "Product $externalId already exists. Updating product and plan details."
+        Write-Error "Product configuration file not found. Please specify the path to the product configuration file."
+        Exit 1
+    }
 
-        # Update product details
-        UpdateProduct -configureSchema $configuration.'$schema' -productDurableId $productDurableId -productResources $configuration.product.resources
-        Write-Output "Product $externalId updated."
+    try
+    {
+        $configuration = Get-Content $productConfigurationFile -Raw | ConvertFrom-Json
+        $externalId = $configuration.product.identity.externalId
 
-        foreach ($plan in $configuration.plans)
+        Write-Output "Checking for existing product with external ID: $externalId"
+        $productDurableId = GetProductDurableId -productExternalId $externalId
+        if ($productDurableId -eq "")
         {
-            $planExternalId = $plan.identity.externalId
-            $planDurableId = GetPlanDurableId -productDurableId $productDurableId -planExternalId $planExternalId
-            if ($planDurableId -eq "")
+            Write-Output "Creating new product: $externalId"
+            $productDurableId = CreateProduct -configureSchema $configuration.'$schema' -productConfiguration $configuration.product
+            Write-Output "Product $externalId has ID $productDurableId"
+
+            # Update product details
+            UpdateProduct -configureSchema $configuration.'$schema' -productDurableId $productDurableId -productResources $configuration.product.resources
+            Write-Output "Product $externalId updated."
+
+            foreach ($plan in $configuration.plans)
             {
+                $planExternalId = $plan.identity.externalId
                 Write-Output "Creating new plan: $planExternalId"
                 $planDurableId = CreatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planConfiguration $plan
                 Write-Output "Plan $planExternalId has ID $planDurableId"
-            }
 
-            # Update plan details
-            Write-Output "Updating details for plan $planExternalId."
-            UpdatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planDurableId $planDurableId -planResources $plan.resources
-            Write-Output "Plan $planExternalId updated."
+                # Update plan details
+                UpdatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planDurableId $planDurableId -planResources $plan.resources
+                Write-Output "Plan $planExternalId updated."
+            }
+        }
+        else
+        {
+            Write-Output "Product $externalId already exists. Updating product and plan details."
+
+            # Update product details
+            UpdateProduct -configureSchema $configuration.'$schema' -productDurableId $productDurableId -productResources $configuration.product.resources
+            Write-Output "Product $externalId updated."
+
+            foreach ($plan in $configuration.plans)
+            {
+                $planExternalId = $plan.identity.externalId
+                $planDurableId = GetPlanDurableId -productDurableId $productDurableId -planExternalId $planExternalId
+                if ($planDurableId -eq "")
+                {
+                    Write-Output "Creating new plan: $planExternalId"
+                    $planDurableId = CreatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planConfiguration $plan
+                    Write-Output "Plan $planExternalId has ID $planDurableId"
+                }
+
+                # Update plan details
+                Write-Output "Updating details for plan $planExternalId."
+                UpdatePlan -configureSchema $configuration.'$schema' -productDurableId $productDurableId -planDurableId $planDurableId -planResources $plan.resources
+                Write-Output "Plan $planExternalId updated."
+            }
         }
     }
+    catch
+    {
+        Write-Error "There was an issue configuring your product: $($_.Exception.Message)"
+        Exit 1
+    }
 }
-catch
-{
-    Write-Error "There was an issue configuring your product: $($_.Exception.Message)"
-    Exit 1
+
+function PublishProduct {
+    param (
+        [Parameter(Mandatory = $True, HelpMessage = "Product external ID")]
+        [String] $productExternalId,
+        [Parameter(Mandatory = $False, HelpMessage = "Target type: preview or live")]
+        [String] $targetType = "preview"
+    )
+
+    if ($targetType -eq "")
+    {
+        Write-Error "Target type is required. Please provide one of the following values: preview, live."
+        Exit 1
+    }
+
+    if ($targetType -ne "preview" -and $targetType -ne "live")
+    {
+        Write-Error "Invalid target type provided. Please provide one of the following values: preview, live."
+        Exit 1
+    }
+
+    try
+    {
+        Write-Output "Checking for existing product with external ID: $productExternalId"
+        $productDurableId = GetProductDurableId -productExternalId $productExternalId
+        if ($productDurableId -eq "")
+        {
+            throw "Unable to publish to $targetType. Product with external ID $productExternalId not found."
+        }
+        else
+        {
+            Write-Output "Product $productExternalId found: $productDurableId. Publishing to $targetType."
+            Publish -configureSchema $configureSchema -productDurableId $productDurableId -targetType $targetType
+        }
+    }
+    catch
+    {
+        Write-Error "There was an issue publishing your product to preview: $($_.Exception.Message)"
+        Exit 1
+    }
 }
