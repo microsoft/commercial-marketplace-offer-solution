@@ -1,0 +1,566 @@
+{
+    "$schema": "https://product-ingestion.azureedge.net/schema/configure/2022-03-01-preview2",
+    "product": {
+        "$schema": "https://product-ingestion.azureedge.net/schema/product/2022-03-01-preview3",
+        "identity": {
+            "externalId": "testpi-vm"
+        },
+        "type": "azureVirtualMachine",
+        "alias": "Test PI VM",
+        "resources": [
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/customer-leads/2022-03-01-preview2",
+                "leadDestination": "none"
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/test-drive/2022-03-01-preview2",
+                "enabled": false
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/property/2022-03-01-preview3",
+                "kind": "azureVM",
+                "termsOfUse": "Terms of use",
+                "termsConditions": "custom",
+                "categories": {
+                    "analytics-amp": [
+                        "data-analytics"
+                    ],
+                    "ai-plus-machine-learning": [
+                        "bot-services",
+                        "cognitive-services"
+                    ]
+                }
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/listing/2022-03-01-preview3",
+                "kind": "azureVM",
+                "title": "Test PI VM",
+                "description": "Contoso App makes dev ops a breeze",
+                "searchResultSummary": "Contoso App makes dev ops a breeze",
+                "shortDescription": "Contoso App makes dev ops a breeze",
+                "privacyPolicyLink": "https://azuremarketplace.microsoft.com",
+                "generalLinks": [
+                    {
+                        "displayText": "Contoso App for Azure",
+                        "link": "https://azuremarketplace.microsoft.com"
+                    }
+                ],
+                "supportContact": {
+                    "name": "Jon Doe",
+                    "email": "jondoe@outlook.com",
+                    "phone": "555-555-5555"
+                },
+                "engineeringContact": {
+                    "name": "Jon Doe",
+                    "email": "jondoe@outlook.com",
+                    "phone": "555-555-5555"
+                },
+                "languageId": "en-us"
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/listing-asset/2022-03-01-preview3",
+                "kind": "azure",
+                "type": "azureLogoSmall",
+                "languageId": "en-us",
+                "description": "",
+                "displayOrder": 0,
+                "fileName": "small.png",
+                "friendlyName": "small.png",
+                "url": "https://github.com/microsoft/commercial-marketplace-offer-solution/raw/main/marketplace/virtual-machine/basic-windows-vm/logos/small.png"
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/listing-asset/2022-03-01-preview3",
+                "kind": "azure",
+                "type": "azureLogoMedium",
+                "languageId": "en-us",
+                "description": "",
+                "displayOrder": 0,
+                "fileName": "medium.png",
+                "friendlyName": "medium.png",
+                "url": "https://github.com/microsoft/commercial-marketplace-offer-solution/raw/main/marketplace/virtual-machine/basic-windows-vm/logos/medium.png"
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/listing-asset/2022-03-01-preview3",
+                "kind": "azure",
+                "type": "azureLogoLarge",
+                "languageId": "en-us",
+                "description": "",
+                "displayOrder": 0,
+                "fileName": "large.png",
+                "friendlyName": "large.png",
+                "url": "https://github.com/microsoft/commercial-marketplace-offer-solution/raw/main/marketplace/virtual-machine/basic-windows-vm/logos/large.png"
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/price-and-availability-offer/2022-03-01-preview3",
+                "previewAudiences": [
+                    {
+                        "type": "subscription",
+                        "id": "66cee5af-ac62-4e46-a779-feff32a4f509",
+                        "label": ""
+                    }
+                ]
+            },
+            {
+                "$schema": "https://product-ingestion.azureedge.net/schema/reseller/2022-03-01-preview2",
+                "resellerChannelState": "none",
+                "audiences": []
+            }
+        ]
+    },
+    "plans": [
+        {
+            "$schema": "https://product-ingestion.azureedge.net/schema/plan/2022-03-01-preview2",
+            "identity": {
+                "externalId": "contoso-win"
+            },
+            "alias": "Contoso Windows VM",
+            "azureRegions": [
+                "azureGlobal"
+            ],
+            "resources": [
+                {
+                    "$schema": "https://product-ingestion.azureedge.net/schema/plan-listing/2022-03-01-preview3",
+                    "kind": "azureVM-plan",
+                    "name": "Contoso Windows VM",
+                    "description": "This is a description for the Contoso App that makes dev ops a breeze.",
+                    "summary": "Contoso App makes dev ops a breeze.",
+                    "languageId": "en-us"
+                },
+                {
+                    "$schema": "https://schema.mp.microsoft.com/schema/price-and-availability-plan/2022-03-01-preview4",
+                    "visibility": "hidden",
+                    "markets": [
+                        "ad",
+                        "ae",
+                        "af",
+                        "al",
+                        "am",
+                        "ao",
+                        "ar",
+                        "at",
+                        "au",
+                        "az",
+                        "ba",
+                        "bb",
+                        "bd",
+                        "be",
+                        "bg",
+                        "bh",
+                        "bm",
+                        "bn",
+                        "bo",
+                        "br",
+                        "bw",
+                        "by",
+                        "bz",
+                        "ca",
+                        "ch",
+                        "ci",
+                        "cl",
+                        "cm",
+                        "co",
+                        "cr",
+                        "cv",
+                        "cw",
+                        "cy",
+                        "cz",
+                        "de",
+                        "dk",
+                        "do",
+                        "dz",
+                        "ec",
+                        "ee",
+                        "eg",
+                        "es",
+                        "et",
+                        "fi",
+                        "fj",
+                        "fo",
+                        "fr",
+                        "gb",
+                        "ge",
+                        "gh",
+                        "gr",
+                        "gt",
+                        "hk",
+                        "hn",
+                        "hr",
+                        "hu",
+                        "id",
+                        "ie",
+                        "il",
+                        "in",
+                        "iq",
+                        "is",
+                        "it",
+                        "jm",
+                        "jo",
+                        "jp",
+                        "ke",
+                        "kg",
+                        "kn",
+                        "kr",
+                        "kw",
+                        "ky",
+                        "kz",
+                        "lb",
+                        "li",
+                        "lk",
+                        "lt",
+                        "lu",
+                        "lv",
+                        "ly",
+                        "ma",
+                        "mc",
+                        "md",
+                        "me",
+                        "mk",
+                        "mn",
+                        "mo",
+                        "mt",
+                        "mu",
+                        "mx",
+                        "my",
+                        "na",
+                        "ng",
+                        "ni",
+                        "nl",
+                        "no",
+                        "np",
+                        "nz",
+                        "om",
+                        "pa",
+                        "pe",
+                        "ph",
+                        "pk",
+                        "pl",
+                        "pr",
+                        "ps",
+                        "pt",
+                        "py",
+                        "qa",
+                        "ro",
+                        "rs",
+                        "ru",
+                        "rw",
+                        "sa",
+                        "se",
+                        "sg",
+                        "si",
+                        "sk",
+                        "sn",
+                        "sv",
+                        "th",
+                        "tj",
+                        "tm",
+                        "tn",
+                        "tr",
+                        "tt",
+                        "tw",
+                        "tz",
+                        "ua",
+                        "ug",
+                        "us",
+                        "uy",
+                        "uz",
+                        "va",
+                        "ve",
+                        "vi",
+                        "vn",
+                        "ye",
+                        "za",
+                        "zm",
+                        "zw"
+                    ],
+                    "pricing": {
+                        "licenseModel": "payAsYouGo",
+                        "corePricing": {
+                            "priceInputOption": "free"
+                        }
+                    },
+                    "trial": null,
+                    "softwareReservation": [],
+                    "audience": "public",
+                    "privateAudiences": []
+                },
+                {
+                    "$schema": "https://product-ingestion.azureedge.net/schema/virtual-machine-plan-technical-configuration/2022-03-01-preview2",
+                    "operatingSystem": {
+                        "family": "windows",
+                        "friendlyName": "Contoso App",
+                        "type": "other"
+                    },
+                    "recommendedVmSizes": [
+                        "d2-standard-v4",
+                        "d2ds-standard-v4",
+                        "d2s-standard-v4"
+                    ],
+                    "openPorts": [],
+                    "vmProperties": {
+                        "supportsExtensions": true,
+                        "supportsBackup": false,
+                        "supportsAcceleratedNetworking": false,
+                        "isNetworkVirtualAppliance": false,
+                        "supportsNVMe": false,
+                        "supportsCloudInit": false,
+                        "supportsAadLogin": false,
+                        "supportsHibernation": false,
+                        "supportsRemoteConnection": true,
+                        "requiresCustomArmTemplate": false
+                    },
+                    "skus": [
+                        {
+                            "imageType": "x64Gen1",
+                            "skuId": "contoso-win"
+                        }
+                    ],
+                    "vmImageVersions": [
+                        {
+                            "versionNumber": "1.0.0",
+                            "vmImages": [
+                                {
+                                    "imageType": "x64Gen1",
+                                    "source": {
+                                        "sourceType": "sharedImageGallery",
+                                        "sharedImage": {
+                                            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+                                            "resourceId": "/subscriptions/66cee5af-ac62-4e46-a779-feff32a4f509/resourceGroups/azmp-test-rg/providers/Microsoft.Compute/galleries/TestVMGallery/images/TestVMWin/versions/1.0.0"
+                                        }
+                                    }
+                                }
+                            ],
+                            "lifecycleState": "generallyAvailable"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "$schema": "https://product-ingestion.azureedge.net/schema/plan/2022-03-01-preview2",
+            "identity": {
+                "externalId": "contoso-lin"
+            },
+            "alias": "Contoso Linux VM",
+            "azureRegions": [
+                "azureGlobal"
+            ],
+            "resources": [
+                {
+                    "$schema": "https://product-ingestion.azureedge.net/schema/plan-listing/2022-03-01-preview3",
+                    "kind": "azureVM-plan",
+                    "name": "Contoso Linux VM",
+                    "description": "This is a description for the Contoso App that makes dev ops a breeze.",
+                    "summary": "Contoso App makes dev ops a breeze.",
+                    "languageId": "en-us"
+                },
+                {
+                    "$schema": "https://schema.mp.microsoft.com/schema/price-and-availability-plan/2022-03-01-preview4",
+                    "visibility": "hidden",
+                    "markets": [
+                        "ad",
+                        "ae",
+                        "af",
+                        "al",
+                        "am",
+                        "ao",
+                        "ar",
+                        "at",
+                        "au",
+                        "az",
+                        "ba",
+                        "bb",
+                        "bd",
+                        "be",
+                        "bg",
+                        "bh",
+                        "bm",
+                        "bn",
+                        "bo",
+                        "br",
+                        "bw",
+                        "by",
+                        "bz",
+                        "ca",
+                        "ch",
+                        "ci",
+                        "cl",
+                        "cm",
+                        "co",
+                        "cr",
+                        "cv",
+                        "cw",
+                        "cy",
+                        "cz",
+                        "de",
+                        "dk",
+                        "do",
+                        "dz",
+                        "ec",
+                        "ee",
+                        "eg",
+                        "es",
+                        "et",
+                        "fi",
+                        "fj",
+                        "fo",
+                        "fr",
+                        "gb",
+                        "ge",
+                        "gh",
+                        "gr",
+                        "gt",
+                        "hk",
+                        "hn",
+                        "hr",
+                        "hu",
+                        "id",
+                        "ie",
+                        "il",
+                        "in",
+                        "iq",
+                        "is",
+                        "it",
+                        "jm",
+                        "jo",
+                        "jp",
+                        "ke",
+                        "kg",
+                        "kn",
+                        "kr",
+                        "kw",
+                        "ky",
+                        "kz",
+                        "lb",
+                        "li",
+                        "lk",
+                        "lt",
+                        "lu",
+                        "lv",
+                        "ly",
+                        "ma",
+                        "mc",
+                        "md",
+                        "me",
+                        "mk",
+                        "mn",
+                        "mo",
+                        "mt",
+                        "mu",
+                        "mx",
+                        "my",
+                        "na",
+                        "ng",
+                        "ni",
+                        "nl",
+                        "no",
+                        "np",
+                        "nz",
+                        "om",
+                        "pa",
+                        "pe",
+                        "ph",
+                        "pk",
+                        "pl",
+                        "pr",
+                        "ps",
+                        "pt",
+                        "py",
+                        "qa",
+                        "ro",
+                        "rs",
+                        "ru",
+                        "rw",
+                        "sa",
+                        "se",
+                        "sg",
+                        "si",
+                        "sk",
+                        "sn",
+                        "sv",
+                        "th",
+                        "tj",
+                        "tm",
+                        "tn",
+                        "tr",
+                        "tt",
+                        "tw",
+                        "tz",
+                        "ua",
+                        "ug",
+                        "us",
+                        "uy",
+                        "uz",
+                        "va",
+                        "ve",
+                        "vi",
+                        "vn",
+                        "ye",
+                        "za",
+                        "zm",
+                        "zw"
+                    ],
+                    "pricing": {
+                        "licenseModel": "payAsYouGo",
+                        "corePricing": {
+                            "priceInputOption": "free"
+                        }
+                    },
+                    "trial": null,
+                    "softwareReservation": [],
+                    "audience": "public",
+                    "privateAudiences": []
+                },
+                {
+                    "$schema": "https://product-ingestion.azureedge.net/schema/virtual-machine-plan-technical-configuration/2022-03-01-preview2",
+                    "operatingSystem": {
+                        "family": "windows",
+                        "friendlyName": "Contoso App",
+                        "type": "other"
+                    },
+                    "recommendedVmSizes": [
+                        "d2-standard-v4",
+                        "d2ds-standard-v4",
+                        "d2s-standard-v4"
+                    ],
+                    "openPorts": [],
+                    "vmProperties": {
+                        "supportsExtensions": true,
+                        "supportsBackup": false,
+                        "supportsAcceleratedNetworking": false,
+                        "isNetworkVirtualAppliance": false,
+                        "supportsNVMe": false,
+                        "supportsCloudInit": false,
+                        "supportsAadLogin": false,
+                        "supportsHibernation": false,
+                        "supportsRemoteConnection": true,
+                        "requiresCustomArmTemplate": false
+                    },
+                    "skus": [
+                        {
+                            "imageType": "x64Gen1",
+                            "skuId": "contoso-lin"
+                        }
+                    ],
+                    "vmImageVersions": [
+                        {
+                            "versionNumber": "1.0.0",
+                            "vmImages": [
+                                {
+                                    "imageType": "x64Gen1",
+                                    "source": {
+                                        "sourceType": "sharedImageGallery",
+                                        "sharedImage": {
+                                            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+                                            "resourceId": "/subscriptions/66cee5af-ac62-4e46-a779-feff32a4f509/resourceGroups/azmp-test-rg/providers/Microsoft.Compute/galleries/TestVMGallery/images/TestLinVM/versions/1.0.0"
+                                        }
+                                    }
+                                }
+                            ],
+                            "lifecycleState": "generallyAvailable"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

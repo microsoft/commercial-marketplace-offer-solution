@@ -1,0 +1,33 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Virtual Machine PR
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+
+env:
+  APPLICATION_DIRECTORY: marketplace/virtual-machine/basic-windows-vm
+
+jobs:
+  ConfigureOffer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Configure Offer
+        uses: ./.github/actions/product-ingestion-api
+        with:
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          command: configure
+          configFilePath: "configuration.json"
+          workingDirectory: ${{ env.APPLICATION_DIRECTORY }}
+      # - name: Publish Offer to Preview
+      #   uses: ./.github/actions/product-ingestion-api
+      #   with:
+      #     azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+      #     command: publish
+      #     productExternalId: testpi-vm
+      #     targetType: preview
+      #     workingDirectory: ${{ env.APPLICATION_DIRECTORY }}
