@@ -33,12 +33,20 @@ runs:
       shell: pwsh
       working-directory: ${{ inputs.workingDirectory }}
       run: |
-        & $env:GITHUB_ACTION_PATH/configure_product.ps1 -productConfigurationFile ${{ inputs.configFilePath }}
+        $sb = {
+          . "$env:GITHUB_ACTION_PATH/product_ingestion.ps1"
+          ConfigureProduct -productConfigurationFile ${{ inputs.configFilePath }}
+        }
+        & $sb
       if: ${{ inputs.command == 'configure' }}
     - name: Publish Offer
       id: publish-offer
       shell: pwsh
       working-directory: ${{ inputs.workingDirectory }}
       run: |
-        & $env:GITHUB_ACTION_PATH/publish.ps1 -productExternalId ${{ inputs.productExternalId }} -targetType ${{ inputs.targetType }}
+        $sb = {
+          . "$env:GITHUB_ACTION_PATH/product_ingestion.ps1"
+          PublishProduct -productExternalId ${{ inputs.productExternalId }} -targetType ${{ inputs.targetType }}
+        }
+        & $sb
       if: ${{ inputs.command == 'publish' }}
