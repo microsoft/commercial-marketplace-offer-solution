@@ -317,6 +317,25 @@ function UpdatePlan {
     PostConfigure -configureSchema $configureSchema -resources $planResources
 }
 
+function Publish {
+    param (
+        [String] $configureSchema,
+        [String] $productDurableId,
+        [String] $targetType
+    )
+
+    $submission = @{
+        "`$schema" = "https://product-ingestion.azureedge.net/schema/submission/2022-03-01-preview2"
+        "product" = $productDurableId
+        "target" = @{
+            "targetType" = $targetType
+        }
+    }
+    $resources = @($submission)
+
+    PostConfigure -configureSchema $configureSchema -resources $resources
+}
+
 function ConfigureProduct {
     param (
         [Parameter(Mandatory = $True, HelpMessage = "The path to the VM listing config file")]
