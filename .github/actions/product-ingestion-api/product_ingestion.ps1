@@ -9,6 +9,7 @@
 
 $baseUrl = "https://graph.microsoft.com/rp/product-ingestion"
 $configureBaseUrl = "$baseUrl/configure"
+$defaultConfigureSchema = "https://product-ingestion.azureedge.net/schema/configure/2022-03-01-preview2"
 
 function GetHeaders {
     $token = az account get-access-token --resource=https://graph.microsoft.com --query accessToken --output tsv
@@ -445,7 +446,7 @@ function PublishProduct {
         else
         {
             Write-Output "Product $productExternalId found: $productDurableId. Publishing to $targetType."
-            Publish -configureSchema $configureSchema -productDurableId $productDurableId -targetType $targetType
+            Publish -configureSchema $defaultConfigureSchema -productDurableId $productDurableId -targetType $targetType
         }
     }
     catch
