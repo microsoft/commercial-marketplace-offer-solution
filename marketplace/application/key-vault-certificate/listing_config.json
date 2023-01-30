@@ -1,0 +1,123 @@
+{
+  "offer_setup"            : {
+    "alias"    : "keyvault-sample-app",
+    "testDrive": false,
+    "crm"      : ""
+  },
+  "property_settings"      : {
+    "leveledCategories"  : {
+      "developer-tools-azure-apps": [
+        "other-developer-tools"
+      ]
+    }
+  },
+  "offer_listing"          : {
+    "title"              : "Sample Managed App with Keyvault & Certificate",
+    "publisher_name"     : "Contoso Inc.",
+    "summary"            : "<Search results Summary*>",
+    "short_description"  : "<Short description*>",
+    "description"        : "<p>This is a description that uses html tags</p>",
+    "keywords"           : [
+      "design",
+      "simulation",
+      "engineer"
+    ],
+    "listing_contacts"   : [
+      {
+        "type" : "CustomerSupport",
+        "email": "name@email.com",
+        "name" : "FirstName LastName",
+        "phone": "+5555555555",
+        "uri"  : "https://website.design/moreinfo/contactus"
+      },
+      {
+        "type" : "Engineering",
+        "email": "name@company.com",
+        "name" : "Name Name",
+        "phone": "+5555555555"
+      }
+    ],
+    "listing_uris"       : [
+      {
+        "type"       : "PrivacyUri",
+        "displayText": "Privacy Url",
+        "uri"        : "https://website.design/eula"
+      },
+      {
+        "type"       : "PublicCloudSupport",
+        "displayText": "Privacy PublicCloudSupport",
+        "uri"        : "https://website.design/PublicCloudSupport"
+      }
+    ],
+    "listing_logos"      : {
+      "logo_large" : "virtual-machine_216_216.png",
+      "logo_small" : "virtual-machine_48_48.png",
+      "logo_medium": "virtual-machine_90_90.png",
+      "logo_wide"  : "virtual-machine_255_115.png"
+    },
+    "listing_screenshots": {},
+    "listing_videos"     : {}
+  },
+  "preview_audience"       : {
+    "subscriptions": [
+      "fdc4bb25-4f8d-4349-b760-911e1d61b3c2",
+      "edf507a2-6235-46c5-b560-fd463ba2e771",
+      "69c75911-7439-4362-855d-c8f3ecbbf3de",
+      "0ca618d2-22a8-413a-96d0-0f1b531129c3",
+      "3ce675b8-fcea-4732-a965-393bbe02d7ad",
+      "8fee7450-a739-4529-8a51-f58a6617c27d",
+      "ecfc2cfe-3121-4c2d-9cae-d52e2e13e55c",
+      "b1838202-0929-45e3-9e8e-d83c96d0e550",
+      "914c011a-aeb8-4b3e-970c-8521c2f46874",
+      "678a21c0-c38c-4777-bd69-a9bdb2a74d61",
+      "2316d4b3-e497-4c51-b46c-4616e1bda051",
+      "6a132d79-980a-4afe-9a9b-37bfd2f5a87e",
+      "496d803e-5a9f-4ea5-9120-46f6374b91d8",
+      "9e087dff-9c5b-4650-96ee-19cfe5269c5d",
+      "2316d4b3-e497-4c51-b46c-4616e1bda051"
+    ]
+  },
+  "technical_configuration": {
+    "_note"         : "Only required for emitting metering events",
+    "tenant_id"     : "<AAD Tenant Id>",
+    "application_id": "<AAD Application ID>"
+  },
+  "plan_overview"          : {
+    "preview": {
+      "plan_listing"            : {
+        "title"              : "Sample Key Vault App",
+        "shortDescription"  : "Short description",
+        "description"        : "<p>This is a description that uses html tags</p>"
+      },
+      "pricing_and_availability": {
+        "visibility"                 : "private",
+        "azure_private_subscriptions": [
+          {
+            "ID": "1bb6badf-d123-41a7-bda0-8a9e8d9f1b67"
+          }
+        ]
+      },
+      "technical_configuration" : {
+        "version"               : "0.1.47",
+        "allowedCustomerActions": [
+          "Microsoft.Storage/*;Microsoft.KeyVault/*;Microsoft.ManagedIdentity/*;Microsoft.Network/*;Microsoft.Resources/*;Microsoft.Compute/*;Microsoft.ContainerService/*;Microsoft.Authorization/*;Microsoft.DocumentDB/*;Microsoft.Insights/*"
+        ],
+        "allowedDataActions"    : [
+          "Microsoft.Storage/*;Microsoft.KeyVault/*;Microsoft.ManagedIdentity/*;Microsoft.Network/*;Microsoft.Resources/*;Microsoft.Compute/*;Microsoft.ContainerService/*;Microsoft.Authorization/*;Microsoft.DocumentDB/*;Microsoft.Insights/*"
+        ],
+        "deploymentMode"        : "Complete",
+        "tenant_id"             : "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "authorizations"        : [
+          {
+            "id"  : "00c05383-7f3a-4c79-b096-d6ff3b71c3c0",
+            "role": "Owner"
+          }
+        ],
+        "policy_settings"       : [],
+        "allow_jit_access"      : false
+      }
+    }
+  },
+  "co-sell"                : {},
+  "resell"                 : {}
+}
