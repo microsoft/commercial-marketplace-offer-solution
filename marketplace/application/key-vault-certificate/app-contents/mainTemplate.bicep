@@ -47,7 +47,7 @@ resource partnercenter 'Microsoft.Resources/deployments@2021-04-01' = {
   }
 }
 
-module keyVault '../../unreal-cloud-ddc/app-contents/modules/keyvault/vaults.bicep' = {
+module keyVault 'modules/keyvault/vaults.bicep' = {
   name: 'keyVault-${uniqueString(location, resourceGroup().id, deployment().name)}'
   params: {
     location: location
@@ -56,7 +56,7 @@ module keyVault '../../unreal-cloud-ddc/app-contents/modules/keyvault/vaults.bic
   }
 }
 
-module kvCert '../../unreal-cloud-ddc/app-contents/modules/keyvault/create-kv-certificate.bicep' = {
+module kvCert 'modules/keyvault/create-kv-certificate.bicep' = {
   name: 'akvCert-${location}'
   dependsOn: [
     keyVault
