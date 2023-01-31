@@ -32,6 +32,9 @@ param managedIdentityPrefix string = 'id-ddc-storage-'
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
 
+@descriptin('Set to false to deploy from as an ARM template for debugging') 
+param isApp bool = true
+
 var _artifactsLocationWithToken = _artifactsLocationSasToken != ''
 
 //  Resources
@@ -71,6 +74,7 @@ module kvCert 'modules/keyvault/create-kv-certificate.bicep' = {
     useExistingManagedIdentity: useExistingManagedIdentity
     managedIdentityName: '${managedIdentityPrefix}${location}'
     rbacRolesNeededOnKV: '00482a5a-887f-4fb3-b363-3b7fe8e74483' // Key Vault Admin
+    isApp: isApp
   }
 }
 // End
