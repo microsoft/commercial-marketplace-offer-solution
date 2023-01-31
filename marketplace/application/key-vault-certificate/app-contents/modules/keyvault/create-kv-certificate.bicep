@@ -41,6 +41,9 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider')
 param issuerProvider string = ''
 
+@descriptin('Set to false to deploy from as an ARM template for debugging') 
+param isApp bool = true
+
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
 }
@@ -64,6 +67,7 @@ resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
+    delegatedManagedIdentityResourceId: isApp ? (useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id) : null
   }
 }
 
