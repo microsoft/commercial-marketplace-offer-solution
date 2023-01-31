@@ -3,8 +3,45 @@
   "handler": "Microsoft.Azure.CreateUIDef",
   "version": "0.1.2-preview",
   "parameters": {
+    "basics": [
+      {
+        "name": "useExisting",
+        "type": "Microsoft.Common.CheckBox",
+        "label": "Use Existing Cert?"
+      },
+      {
+        "name": "keyVaultCertificateSelection",
+        "type": "Microsoft.KeyVault.KeyVaultCertificateSelector",
+        "visible": "[basics('useExisting')]",
+        "toolTip": "Select certificate",
+        "label": "Key Vault certificates selection"
+      }
+    ],
+    "steps": [
+      {
+        "name": "tags",
+        "label": "Tags",
+        "elements": [
+          {
+            "name": "tagsByResource",
+            "type": "Microsoft.Common.TagsByResource",
+            "resources": [
+              "Microsoft.Storage/storageAccounts",
+              "Microsoft.Compute/virtualMachines"
+            ]
+          }
+        ]
+      }
+    ],
     "outputs": {
       "location": "[location()]",
+      "tagsByResource": "[steps('tags').tagsByResource]",
+      "useExisting": "[basics('useExisting')]",
+      "keyVaultName": "[basics('keyVaultCertificateSelection').keyVaultName]",
+      "keyVaultId": "[basics('keyVaultCertificateSelection').keyVaultId]",
+      "certificateName": "[basics('keyVaultCertificateSelection').certificateName]",
+      "certificateUrl": "[basics('keyVaultCertificateSelection').certificateUrl]",
+      "certificateThumbprint": "[basics('keyVaultCertificateSelection').certificateThumbprint]"
     }
   }
 }
