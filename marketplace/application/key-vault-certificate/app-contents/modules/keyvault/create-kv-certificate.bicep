@@ -31,11 +31,7 @@ param certificateCommonName string = certificateName
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '0'
 
-@allowed([
-  'OnSuccess'
-  'OnExpiration'
-  'Always'
-])
+@allowed([ 'OnSuccess', 'OnExpiration', 'Always' ])
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
@@ -87,38 +83,14 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     timeout: 'PT10M'
     retentionInterval: 'P1D'
     environmentVariables: [
-      {
-        name: 'akvName'
-        value: akvName
-      }
-      {
-        name: 'certName'
-        value: certificateName
-      }
-      {
-        name: 'certCommonName'
-        value: certificateCommonName
-      }
-      {
-        name: 'initialDelay'
-        value: initialScriptDelay
-      }
-      {
-        name: 'issuerName'
-        value: issuerName
-      }
-      {
-        name: 'issuerProvider'
-        value: issuerProvider
-      }
-      {
-        name: 'retryMax'
-        value: '10'
-      }
-      {
-        name: 'retrySleep'
-        value: '5s'
-      }
+      { name: 'akvName', value: akvName }
+      { name: 'certName', value: certificateName }
+      { name: 'certCommonName', value: certificateCommonName }
+      { name: 'initialDelay', value: initialScriptDelay }
+      { name: 'issuerName', value: issuerName }
+      { name: 'issuerProvider', value: issuerProvider }
+      { name: 'retryMax', value: '10' }
+      { name: 'retrySleep', value: '5s' }
     ]
     scriptContent: loadTextContent('create-kv.sh')
     cleanupPreference: cleanupPreference
