@@ -1,0 +1,69 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Deploy ARM
+
+concurrency: 
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  DeployTemplate:
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIR: marketplace/application/unreal-cloud-ddc/app-contents
+      resourceGroup: devops-resources
+      location: eastus
+      storageAccount: unrealddcdevopsstorage
+      artifactContainer: artifacts
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/actions/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: PrepareStorage
+      run: |
+        az storage account show \
+          --name "$storageAccount" \
+          --resource-group "$resourceGroup" 2>/dev/null \
+        || ${PWD}/scripts/prepareStorage.sh $resourceGroup $storageAccount $artifactContainer
+
+    - name: PackageApp
+      run: |
+        ${PWD}/scripts/package.sh $resourceGroup $storageAccount $artifactContainer
+
+    - name: DeployARM
+      id: deploy_arm
+      run: |
+        ${PWD}/scripts/deployDev.sh $resourceGroup $storageAccount $artifactContainer $location $WORKING_DIR $suffix
+
+    - name: TestARM
+      id: test_arm
+      env:
+        SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        TENANT_ID: ${{ secrets.TENANT_ID }}
+        RG: devops-test-${{ steps.deploy_arm.outputs.RAND_SUFFIX }}
+      run: |
+        python3 -m pip install \
+          pytest-azure
+
+        cd ${PWD}
+        python3 -m pytest tests
+
+    - name: CleanupARM
+      if: always()
+      env:
+        suffix: ${{ steps.deploy_arm.outputs.RAND_SUFFIX }}
+      run: |
+        echo Clean Up: devops-test-$suffix
+        az group delete \
+          --no-wait \
+          --yes \
+          --resource-group devops-test-$suffix
