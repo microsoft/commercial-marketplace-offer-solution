@@ -79,12 +79,6 @@ steps:
 ```
 Refer to the GitHub documentation for more information on using [starter workflows](https://docs.github.com/en/actions/using-workflows/using-starter-workflows).
 
-## Future Work and Updates
-This repository is still under development. We are working to add more offer templates and scripts for testing and automation.
-
-We have included an example [template sync workflow](workflow-templates/template-sync.trigger.yml). Create a new GitHub action by copying this file to `.github/workflows/`. When triggered, this action will create a new Pull Request with the latest changes from the template repository. If the action initially fails, manual merging may be required for the first time.
-When using the repository, we recommend that the original files included remain unchanged, and that new files are created or copied. This will help reduce the likelihood of future merge issues.
-
 
 ## Contribute
 Contributions to this repository are welcome. Here's how you can contribute:
